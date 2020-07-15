@@ -88,6 +88,13 @@
                         <div class="d-flex flex-wrap">
                             <div><h3 class="card-title">Manage Teacher</h3></div>
                         </div>
+                        @if ( Session::has('flag') && Session::get('flag') == 1)
+                            <div class="alert alert-success">{{Session::get('msg')}}</div>
+                        @elseif ( Session::has('flag') && Session::get('flag') == 2)
+                            <div class="alert alert-warning">{{Session::get('msg')}}</div>
+                        @elseif ( Session::has('flag') && Session::get('flag') == 3)
+                            <div class="alert alert-danger">{{Session::get('msg')}}</div>
+                        @endif
                         @if(isset($flag)&&$flag==1)
                             <div class="alert alert-success">{{$msg}}</div>
                         @elseif(isset($flag)&&$flag==2)
@@ -213,7 +220,7 @@
                                     <div class="tab-pane" id="profile">
                                         <!-- form -->
                                         <br>
-                                        <form class="mt-4" method="POST" action="{{ route('admin.update_student_access', ['id'=>$teacher['id']]) }}">
+                                        <form class="mt-4" method="POST" action="{{ route('admin.update_teacher_access', ['id'=>$teacher['id']]) }}">
                                             @csrf
                                             <div class="row">
                                                 <div class="col-md-4">
@@ -223,7 +230,7 @@
                                                         @if($teacher['is_active'])
                                                         <input value="1" data-on-text="Yes" data-off-text="No" id="is_active" name="is_active" type="checkbox" checked data-on-color="info" data-off-color="default">
                                                         @else
-                                                        <input value="1" data-on-text="Yes" data-off-text="No" id="is_active" name="is_active" type="checkbox" data-on-color="info" data-off-color="default">
+                                                        <input value="0" data-on-text="Yes" data-off-text="No" id="is_active" name="is_active" type="checkbox" data-on-color="info" data-off-color="default">
                                                         @endif
                                                     </div>
                                                     <!-- end input -->
@@ -236,14 +243,42 @@
                                         <!-- end form -->
                                     </div>
                                     <div class="tab-pane" id="settings">
+                                        <!-- subject assignment -->
+                                        <h2>Assign Subject to teacher</h2>
+                                        <form class="mt-4" method="POST" action="{{ route('admin.update_teacher_subs', ['id'=>$teacher['id']]) }}">
+                                            @csrf
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <!-- input -->
+                                                    <div class="form-group mb-3">
+                                                        <label for="subjects">Select Subject(s) to assign</label>
+                                                        <select name="subjects[]" id="subjects" class="form-control select2 no-float" autofocus multiple>
+                                                            <option value="nn">Select Subjects</option>
+                                                            @if(count($subjects))
+                                                            @foreach($subjects as $ssjb)
+                                                            <option value="{{$ssjb['id']}}">{{$ssjb['name']}}</option>
+                                                            @endforeach
+                                                            @endif
+                                                        </select>
+                                                    </div>
+                                                    <!-- end -->
+                                                </div>
+                                            </div>
+                                            <div class="form-group text-center col-md-4">
+                                                <button class="btn btn-info" type="submit">Save changes</button>
+                                            </div>
+                                        </form>
+                                        <!-- end assignment -->
                                         <!-- subje table -->
+                                        <hr>
+                                        <h2>Assigned Subjects</h2>
                                         <div class="table-responsive">
                                             <table style="width:100%!important;" id="file_export" class="table table-striped table-bordered display">
                                                 <thead>
                                                     <tr>
                                                         <th>Subject</th>
                                                         <th>Assigned</th>
-                                                        <th>Remove</th>
+                                                        <th>Drop</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -251,10 +286,14 @@
                                                     @if(count($subjects))
                                                     @foreach($subjects as $subjj)
                                                     @php( $sub_name = \App\Subject::select(['name'])->where('id', $subjj['subject'])->first()->name )
+                                                    @php($subjj_id = $subjj['id'])
                                                     <tr>
                                                         <td>{{$sub_name}}</td>
                                                         <td>{{date('M jS, Y',strtotime($subjj['created_at']))}}</td>
-                                                        <td><a href="{{ url('shule/bora/admin/teachers/' . $subjj['id']) }}" class="btn btn-link"><i class="mdi mdi-table-edit"></i>Delete</a></td>
+                                                        <td>
+                                                        <a href="#" onclick="event.preventDefault();document.getElementById('drop-form{{$subjj_id}}').submit();" class="btn btn-link"><i class="mdi mdi-table-edit"></i>Drop</a>
+                                                        <form id="drop-form{{$subjj_id}}" action="{{ url('shule/bora/admin/teachers/t/'.$subjj['teacher'].'/sub/' . $subjj['subject']) }}" method="POST" style="display: none;">@csrf</form>
+                                                        </td>
                                                     </tr>
                                                     @endforeach
                                                     @endif

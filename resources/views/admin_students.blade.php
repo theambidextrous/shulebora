@@ -84,7 +84,7 @@
                 <div class="card blog-widget">
                     <div class="card-body">
                         <div class="d-flex flex-wrap">
-                            <div><h3 class="card-title">All Students</h3></div>
+                            <div><h3 class="card-title">{{$p_title??'All Students'}}</h3></div>
                         </div>
                         @if(isset($flag)&&$flag==1)
                             <div class="alert alert-success">{{$msg}}</div>

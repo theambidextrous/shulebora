@@ -6,7 +6,7 @@
         <!-- ============================================================== -->
         <!-- Logo -->
         <!-- ============================================================== -->
-        <a class="navbar-brand" href="{{url('/shule/bora/profile')}}">
+        <a class="navbar-brand" href="{{url('/')}}">
             <!-- Logo icon -->
             <b class="logo-icon">
                 <!--You can put here icon as well // <i class="wi wi-sunset"></i> //-->
@@ -72,7 +72,7 @@
 
                 @if (Route::has('register'))
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('register') }}">
+                        <a class="nav-link" href="{{ route('student_form') }}">
                             <span class="auth-links"><i class="mdi mdi-account-circle"></i>
                             Register</span>
                         </a>
@@ -82,7 +82,7 @@
             <!-- ============================================================== -->
             <!-- Comment -->
             <!-- ============================================================== -->
-            <li class="nav-item dropdown">
+            <!-- <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle waves-effect waves-dark" href="" data-toggle="dropdown"
                     aria-haspopup="true" aria-expanded="false"> <i class="mdi mdi-message"></i>
                     <div class="notify"> <span class="heartbit--"></span> <span class="point"></span> </div>
@@ -96,7 +96,6 @@
                         </li>
                         <li>
                             <div class="message-center notifications position-relative" style="height:250px;">
-                                <!-- Message -->
                                 <a href="javascript:void(0)" class="message-item d-flex align-items-center border-bottom px-3 py-2">
                                     <span class="btn btn-danger rounded-circle btn-circle"><i class="fa fa-link"></i></span>
                                     <div class="w-75 d-inline-block v-middle pl-2">
@@ -110,14 +109,14 @@
                         </li>
                     </ul>
                 </div>
-            </li>
+            </li> -->
             <!-- ============================================================== -->
             <!-- End Comment -->
             <!-- ============================================================== -->
             <!-- ============================================================== -->
             <!-- Messages -->
             <!-- ============================================================== -->
-            <li class="nav-item dropdown">
+            <!-- <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle waves-effect waves-dark" href="" id="2"
                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i
                         class="mdi mdi-email"></i>
@@ -132,7 +131,6 @@
                         </li>
                         <li>
                             <div class="message-center message-body position-relative" style="height:250px;">
-                                <!-- Message -->
                                 <a href="javascript:void(0)" class="message-item d-flex align-items-center border-bottom px-3 py-2">
                                     <span class="user-img position-relative d-inline-block"> <img src="{{asset('icons/avatar.png')}}" alt="user" class="rounded-circle w-100"> <span class="profile-status rounded-circle online"></span> </span>
                                     <div class="w-75 d-inline-block v-middle pl-2">
@@ -146,7 +144,7 @@
                         </li>
                     </ul>
                 </div>
-            </li>
+            </li> -->
             <!-- ============================================================== -->
             <!-- End Messages -->
             <!-- ============================================================== -->
@@ -172,8 +170,6 @@
                         </li>
                         <li role="separator" class="dropdown-divider"></li>
                         <li class="user-list"><a class="px-3 py-2" href="{{url('/shule/bora/profile')}}"><i class="ti-user"></i> My Profile</a></li>
-                        <li class="user-list"><a class="px-3 py-2" href="{{url('/shule/bora/profile')}}"><i class="ti-wallet"></i> My Balance</a></li>
-                        <li class="user-list"><a class="px-3 py-2" href="{{url('/shule/bora/profile')}}"><i class="ti-email"></i> Inbox</a></li>
                         <li role="separator" class="dropdown-divider"></li>
                         <li class="user-list"><a class="px-3 py-2" href="{{ route('logout') }}" onclick="event.preventDefault();document.getElementById('logout-form').submit();">
                             <i class="fa fa-power-off"></i> Logout</a>

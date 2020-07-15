@@ -50,6 +50,10 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Throwable $exception)
     {
+        // if( $exception instanceof ErrorException )
+        // {
+            // return response(['what-happened' => 'Module under construction']);
+        // }
         return parent::render($request, $exception);
     }
 }

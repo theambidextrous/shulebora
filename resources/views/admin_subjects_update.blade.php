@@ -14,6 +14,7 @@
     <link rel="canonical" href="{{url('/')}}" />
     <!-- This page plugin CSS -->
     <link href="{{ asset('assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.css') }}" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="{{asset('assets/libs/select2/dist/css/select2.min.css')}}">
     <!-- Custom CSS -->
     <link href="{{asset('dist/css/style.min.css')}}" rel="stylesheet">
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -84,8 +85,15 @@
                 <div class="card blog-widget">
                     <div class="card-body">
                         <div class="d-flex flex-wrap">
-                            <div><h3 class="card-title">Update Subject</h3></div>
+                            <div><h3 class="card-title">Manage Subject</h3></div>
                         </div>
+                        @if ( Session::has('flag') && Session::get('flag') == 1)
+                            <div class="alert alert-success">{{Session::get('msg')}}</div>
+                        @elseif ( Session::has('flag') && Session::get('flag') == 2)
+                            <div class="alert alert-warning">{{Session::get('msg')}}</div>
+                        @elseif ( Session::has('flag') && Session::get('flag') == 3)
+                            <div class="alert alert-danger">{{Session::get('msg')}}</div>
+                        @endif
                         @if(isset($flag)&&$flag==1)
                             <div class="alert alert-success">{{$msg}}</div>
                         @elseif(isset($flag)&&$flag==2)
@@ -107,49 +115,178 @@
                             <!-- datatable -->
                             <div class="card">
                             <div class="card-body" style="width:100%!important;">
-                                <div class="table-responsive">
-                                    <form class="floating-labels mt-4" method="POST" action="{{ route('admin.update_subject', ['id'=>$subject['id']]) }}">
-                                        @csrf
-                                        <div class="form-group mb-4">
-                                            <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" id="name" data-toggle="tooltip"
-                                                data-placement="bottom" title="Subject name here" value="{{ $subject['name'] }}" required autocomplete="name" autofocus="name">
-                                            <span class="bar"></span>
-                                            <label for="name">Subject Name</label>
-                                            @error('name')
-                                                <span class="invalid-feedback" role="alert">
-                                                    <strong>{{ $message }}</strong>
-                                                </span>
-                                            @enderror
-                                        </div>
-                                        <div class="form-group mb-5">
-                                        <select name="class_form" id="class_form" class="form-control select2 no-float" autofocus >
-                                            <option value="nn">Select Class/Form</option>
-                                            @if(count($forms))
-                                            @foreach($forms as $frm)
-                                                @if($frm['id'] == $subject['form_or_class'] && $subject['is_what'] == 2)
-                                                <option selected value="is_h~{{$frm['id']}}">{{$frm['name']}}</option>
-                                                @else
-                                                <option value="is_h~{{$frm['id']}}">{{$frm['name']}}</option>
+                            <!-- tabs -->
+                                <ul class="nav nav-tabs mb-3">
+                                    <li class="nav-item">
+                                        <a href="#home" data-toggle="tab" aria-expanded="false" class="nav-link active">
+                                            <i class="mdi mdi-home-variant d-lg-none d-block mr-1"></i>
+                                            <span class="d-none d-lg-block">Modify Subject</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="#profile" data-toggle="tab" aria-expanded="true" class="nav-link">
+                                            <i class="mdi mdi-account-circle d-lg-none d-block mr-1"></i>
+                                            <span class="d-none d-lg-block">Subject Curriculum</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="#settings" data-toggle="tab" aria-expanded="false" class="nav-link">
+                                            <i class="mdi mdi-settings-outline d-lg-none d-block mr-1"></i>
+                                            <span class="d-none d-lg-block">Settings</span>
+                                        </a>
+                                    </li>
+                                </ul>
+
+                                <div class="tab-content">
+                                    <div class="tab-pane show active" id="home">
+                                        <!-- form -->
+                                        <br>
+                                        <form class="floating-labels mt-4" method="POST" action="{{ route('admin.update_subject', ['id'=>$subject['id']]) }}">
+                                            @csrf
+                                            <div class="form-group mb-4">
+                                                <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" id="name" data-toggle="tooltip"
+                                                    data-placement="bottom" title="Subject name here" value="{{ $subject['name'] }}" required autocomplete="name" autofocus="name">
+                                                <span class="bar"></span>
+                                                <label for="name">Subject Name</label>
+                                                @error('name')
+                                                    <span class="invalid-feedback" role="alert">
+                                                        <strong>{{ $message }}</strong>
+                                                    </span>
+                                                @enderror
+                                            </div>
+                                            <div class="form-group mb-5">
+                                            <select name="class_form" id="class_form" class="form-control select2 no-float" autofocus >
+                                                <option value="nn">Select Class/Form</option>
+                                                @if(count($forms))
+                                                @foreach($forms as $frm)
+                                                    @if($frm['id'] == $subject['form_or_class'] && $subject['is_what'] == 2)
+                                                    <option selected value="is_h~{{$frm['id']}}">{{$frm['name']}}</option>
+                                                    @else
+                                                    <option value="is_h~{{$frm['id']}}">{{$frm['name']}}</option>
+                                                    @endif
+                                                @endforeach
                                                 @endif
-                                            @endforeach
-                                            @endif
-                                            @if(count($classes))
-                                            @foreach($classes as $cls)
-                                                @if($cls['id'] == $subject['form_or_class'] && $subject['is_what'] == 1)
-                                                <option selected value="is_p~{{$cls['id']}}">{{$cls['name']}}</option>
-                                                @else
-                                                <option value="is_p~{{$cls['id']}}">{{$cls['name']}}</option>
+                                                @if(count($classes))
+                                                @foreach($classes as $cls)
+                                                    @if($cls['id'] == $subject['form_or_class'] && $subject['is_what'] == 1)
+                                                    <option selected value="is_p~{{$cls['id']}}">{{$cls['name']}}</option>
+                                                    @else
+                                                    <option value="is_p~{{$cls['id']}}">{{$cls['name']}}</option>
+                                                    @endif
+                                                @endforeach
                                                 @endif
-                                            @endforeach
-                                            @endif
-                                        </select>
+                                            </select>
+                                            </div>
+                                            <div class="form-group text-center">
+                                                <button class="btn btn-info" type="submit">Save changes</button>
+                                            </div>
+                                        </form>
+                                        <!-- end form -->
+                                    </div>
+                                    <div class="tab-pane" id="profile">
+                                        <!-- form -->
+                                        <br>
+                                       <!-- subject assignment -->
+                                       <h2>Assign Topics to Subject</h2>
+                                        <form class="floating-labels mt-4" method="POST" action="{{ route('admin.update_subject_topics', ['id'=>$subject['id']]) }}">
+                                            @csrf
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <!-- input -->
+                                                    <div class="form-group mb-4">
+                                                        <input type="text" name="topic" class="form-control @error('topic') is-invalid @enderror" id="topic" data-toggle="tooltip"
+                                                            data-placement="bottom" title="topic here e.g. Classification I" value="{{ old('topic') }}" required autocomplete="topic" autofocus="topic">
+                                                        <span class="bar"></span>
+                                                        <label for="topic">Topic Name</label>
+                                                        @error('topic')
+                                                            <span class="invalid-feedback" role="alert">
+                                                                <strong>{{ $message }}</strong>
+                                                            </span>
+                                                        @enderror
+                                                    </div>
+                                                    <!-- end input -->
+                                                    <!-- input -->
+                                                    <div class="form-group mb-4">
+                                                        <input type="number" name="number" class="form-control @error('number') is-invalid @enderror" id="number" data-toggle="tooltip"
+                                                            data-placement="bottom" title="number here " value="{{ old('number') }}" required autocomplete="number" autofocus="number">
+                                                        <span class="bar"></span>
+                                                        <label for="number">Topic Number in Syllabus</label>
+                                                        @error('number')
+                                                            <span class="invalid-feedback" role="alert">
+                                                                <strong>{{ $message }}</strong>
+                                                            </span>
+                                                        @enderror
+                                                    </div>
+                                                    <!-- end input -->
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <!-- input -->
+                                                    <div class="form-group mb-4">
+                                                        <input type="number" name="required_lessons" class="form-control @error('required_lessons') is-invalid @enderror" id="required_lessons" data-toggle="tooltip"
+                                                            data-placement="bottom" title="topic here e.g. Gregory Juma" value="{{ old('required_lessons') }}" required autocomplete="required_lessons" autofocus="required_lessons">
+                                                        <span class="bar"></span>
+                                                        <label for="required_lessons">Lessons required</label>
+                                                        @error('required_lessons')
+                                                            <span class="invalid-feedback" role="alert">
+                                                                <strong>{{ $message }}</strong>
+                                                            </span>
+                                                        @enderror
+                                                    </div>
+                                                    <!-- end input -->
+                                                </div>
+                                            </div>
+                                            <div class="form-group text-center col-md-4">
+                                                <button class="btn btn-info" type="submit">Assign</button>
+                                            </div>
+                                        </form>
+                                        <!-- end assignment -->
+                                        <!-- subje table -->
+                                        <hr>
+                                        <h2>Assigned Topics</h2>
+                                        <div class="table-responsive">
+                                            <table style="width:100%!important;" id="file_export" class="table table-striped table-bordered display">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Topic</th>
+                                                        <th>Topic Number</th>
+                                                        <th>Required Lessons</th>
+                                                        <th>Drop</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @php( $topics = \App\Curriculum::where('subject', $subject['id'])->get()->toArray() )
+                                                    @if(count($topics))
+                                                    @foreach($topics as $stopic)
+                                                    @php($stopic_id = $stopic['id'])
+                                                    <tr>
+                                                        <td>{{$stopic['topic']}}</td>
+                                                        <td>{{$stopic['number']}}</td>
+                                                        <td>{{$stopic['required_lessons']}}</td>
+                                                        <td>
+                                                        <a href="#" onclick="event.preventDefault();document.getElementById('drop-form{{$stopic_id}}').submit();" class="btn btn-link"><i class="mdi mdi-table-edit"></i>Drop</a>
+                                                        <form id="drop-form{{$stopic_id}}" action="{{ url('shule/bora/admin/subjects/topic/drop/'.$stopic['id']) }}" method="POST" style="display: none;">@csrf</form>
+                                                        </td>
+                                                    </tr>
+                                                    @endforeach
+                                                    @endif
+                                                </tbody>
+                                                <tfoot>
+                                                    <tr>
+                                                        <th>Topic</th>
+                                                        <th>Number</th>
+                                                        <th>Required Lessons</th>
+                                                        <th>Drop</th>
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
                                         </div>
-                                        <div class="form-group text-center">
-                                            <button class="btn btn-info" type="submit">Save changes</button>
-                                        </div>
-                                    </form>
+                                        <!-- end -->
+                                    </div>
+                                    <div class="tab-pane" id="settings">
+                                        
+                                    </div>
                                 </div>
-                            <!-- end datatable -->
+                                <!-- tabs -->
                             </div>
                             </div><!-- inner card  -->
                         </div>
@@ -193,6 +330,9 @@
     <!--This page plugins -->
     <script src="{{ asset('assets/libs/datatables/media/js/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('dist/js/pages/datatable/custom-datatable.js') }}"></script>
+    <script src="{{ asset('assets/libs/select2/dist/js/select2.full.min.js') }}"></script>
+    <script src="{{ asset('assets/libs/select2/dist/js/select2.min.js') }}"></script>
+    <script src="{{ asset('dist/js/pages/forms/select2/select2.init.js') }}"></script>
     <!-- start - This is for export functionality only -->
     <script src="{{ asset('assets/dt/dataTables.buttons.min.js') }}"></script>
     <script src="{{ asset('assets/dt/buttons.flash.min.js') }}"></script>

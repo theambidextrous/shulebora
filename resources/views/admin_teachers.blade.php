@@ -236,7 +236,8 @@
                                         </select>
                                     </div>
                                     <!-- end input -->
-                                    <div class="form-group mb-3">
+                                    <div class="form-group mb-5">
+                                        <label for="subjects">Select Subject(s) to assign</label><br><br>
                                         <select name="subjects[]" id="subjects" class="form-control select2 no-float" autofocus multiple>
                                             <option value="nn">Select Subjects</option>
                                             @if(count($subjects))
@@ -251,7 +252,7 @@
                                         <input type="text" readonly name="password" class="form-control @error('password') is-invalid @enderror" id="password" data-toggle="tooltip"
                                             data-placement="bottom" title="default password here" value="shulebora2020" required autocomplete="password">
                                         <span class="bar"></span>
-                                        <label for="password">Student Password</label>
+                                        <label for="password">Default Password</label>
                                         @error('password')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
@@ -263,7 +264,7 @@
                             </div>
                             <div class="form-group text-center">
                                 <a class="btn btn-link" data-dismiss="modal">Back</a>
-                                <button class="btn btn-info" type="submit">Create Student</button>
+                                <button class="btn btn-info" type="submit">Create Now</button>
                             </div>
                         </form>
                     </div>

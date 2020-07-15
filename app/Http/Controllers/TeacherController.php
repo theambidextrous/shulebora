@@ -58,6 +58,7 @@ class TeacherController extends Controller
     }
     public function create(Request $request)
     {
+        $msg = 'Databse error. Most likely entry already exists';
         if(!Auth::user()->is_admin){
             abort(404); 
         }
@@ -67,7 +68,7 @@ class TeacherController extends Controller
                 'email' => 'string|required',
                 'phone' => 'string|required',
                 'gender' => 'string|required',
-                'subjects' => 'array|required',
+                // 'subjects' => 'array|required',
                 'school' => 'string|required',
                 'password' => 'string|required'
             ])->validate();
@@ -84,12 +85,16 @@ class TeacherController extends Controller
             $teacher = User::create($input);
             if($teacher){
                 $t = User::where('email', $input['email'])->first();
-                foreach( $input['subjects'] as $subj ):
-                    $tsub = [ 'teacher' => $t->id, 'subject' => $subj ];
-                    Tsubject::create($tsub);
-                endforeach;
                 Mail::to($t->email)
                     ->send(new AccountCreation($t, $request->get('password')));
+                foreach( $input['subjects'] as $subj ):
+                    $tsub = [ 'teacher' => $t->id, 'subject' => $subj ];
+                    $isthere = Tsubject::where('subject', $subj)->get()->count();
+                    if(!$isthere){
+                        Tsubject::create($tsub);
+                    }
+                endforeach;
+                
                 return view('admin_teachers')->with([
                     'flag' => 1,
                     'teachers' => $this->teacher_list(),
@@ -118,7 +123,7 @@ class TeacherController extends Controller
             return view('admin_teachers')->with([
                 'flag' => 3,
                 'teachers' => $this->teacher_list(),
-                'msg' => 'Databse error. Most likely entry already exists',
+                'msg' => $msg,
                 'classes' => $this->class_list(),
                 'subjects' => $this->subject_list()
             ]);
@@ -136,7 +141,6 @@ class TeacherController extends Controller
                 'email' => 'string|required',
                 'phone' => 'string|required',
                 'gender' => 'string|required',
-                'class_form' => 'string|required',
                 'school' => 'string|required'
             ])->validate();
             $input = $request->all();
@@ -144,12 +148,6 @@ class TeacherController extends Controller
             $input['school'] = trim(strtoupper($request->get('school')));
             $input['gender'] = trim(strtoupper($request->get('gender')));
             $input['phone'] = $this->format_tel(trim(strtoupper($request->get('phone'))));
-            $w_str = explode('~', $request->get('class_form'));
-            $input['level'] = trim($w_str[1]);
-            $input['group'] = 1;/**primary */
-            if($w_str[0] == 'is_h'){
-                $input['group'] = 2;/**high school/seco */
-            }
             $teacher = User::find($id);
             if(!$teacher){
                     return view('admin_teachers')->with([
@@ -164,10 +162,8 @@ class TeacherController extends Controller
             $teacher->name = $input['name'];
             $teacher->email = $input['email'];
             $teacher->phone = $input['phone'];
-            $teacher->email = $input['email'];
             $teacher->gender = $input['gender'];
-            $teacher->group = $input['group'];
-            $teacher->level = $input['level'];
+            $teacher->school = $input['school'];
             $teacher->save();
             Mail::to($teacher->email)
                 ->send(new AccountUpdate($teacher));
@@ -199,13 +195,9 @@ class TeacherController extends Controller
         try { 
             $this_teacher = User::find($id)->toArray();
             $input = $request->all();
-            $input['can_access_lesson'] = 0;
-            $input['is_paid'] = 0;
-            if($request->get('can_access_lesson')){
-                $input['can_access_lesson'] = 1;
-            }
-            if($request->get('is_paid')){
-                $input['is_paid'] = 1;
+            $input['is_active'] = 0;
+            if($request->get('is_active')){
+                $input['is_active'] = 1;
             }
             $teacher = User::find($id);
             if(!$teacher){
@@ -219,8 +211,7 @@ class TeacherController extends Controller
                     ]);
             }
 
-            $teacher->can_access_lesson = $input['can_access_lesson'];
-            $teacher->is_paid = $input['is_paid'];
+            $teacher->is_active = $input['is_active'];
             $teacher->save();
             return back()->with([
                 'flag' => 1,
@@ -242,9 +233,72 @@ class TeacherController extends Controller
             ]);
           }
     }
+    public function drop_sub($teacher, $subject)
+    {
+        if(!Auth::user()->is_admin){
+            abort(404); 
+        }
+        try { 
+            $this_teacher = User::find($teacher)->toArray();
+            Tsubject::where('teacher', $teacher)->where('subject', $subject)->delete();
+            return back()->with([
+                'flag' => 1,
+                'teacher' => $this_teacher,
+                'teachers' => $this->teacher_list(),
+                'msg' => 'Teacher subject dropped!',
+                'classes' => $this->class_list(),
+                'subjects' => $this->subject_list()
+            ]);
+
+          } catch(\Illuminate\Database\QueryException $ex){ 
+            return back()->with([
+                'flag' => 3,
+                'teacher' => $this_teacher,
+                'teachers' => $this->teacher_list(),
+                'msg' => 'Database error',
+                'classes' => $this->class_list(),
+                'subjects' => $this->subject_list()
+            ]);
+          }
+    }
+    public function update_subs(Request $request, $teacher)
+    {
+        if(!Auth::user()->is_admin){
+            abort(404); 
+        }
+        try { 
+            $this_teacher = User::find($teacher)->toArray();
+            Validator::make($request->all(),[
+                'subjects' => 'array|required'
+            ])->validate();
+            $input = $request->all();
+            foreach( $input['subjects'] as $subj ):
+                $tsub = [ 'teacher' => $teacher, 'subject' => $subj ];
+                Tsubject::create($tsub);
+            endforeach;
+            return back()->with([
+                'flag' => 1,
+                'teacher' => $this_teacher,
+                'teachers' => $this->teacher_list(),
+                'msg' => 'Teacher subjects added!',
+                'classes' => $this->class_list(),
+                'subjects' => $this->subject_list()
+            ]);
+
+          } catch(\Illuminate\Database\QueryException $ex){ 
+            return back()->with([
+                'flag' => 3,
+                'teacher' => $this_teacher,
+                'teachers' => $this->teacher_list(),
+                'msg' => 'Database error',
+                'classes' => $this->class_list(),
+                'subjects' => $this->subject_list()
+            ]);
+          } 
+    }
     protected function teacher_list()
     {
-        return User::where('is_teacher', true)->where('is_active', true)->get()->toArray();
+        return User::where('is_teacher', true)->get()->toArray();
     }
     protected function class_list()
     {

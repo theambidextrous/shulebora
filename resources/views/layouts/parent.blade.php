@@ -12,12 +12,51 @@
             font-weight:600;
             text-align:center;
         }
+        .hidden-class{
+            display:none;
+        }
         .btn-link{
             color:#1e88e5!important;
         }
         .logo-bar{
             /* margin-left: -8%;
             background-color:#fff!important; */
+        }
+        .tm-lg{
+            font-size:18px;
+        }
+        .page-titles > .col-md-5 > .text-themecolor{
+            color:#dd3333!important;
+            margin-bottom:10px!important;
+        }
+        .topic_btn{
+            color: white;
+            width: 130px;
+            padding: 5px 0;
+            border-radius: 8px;
+        }
+        .accordion-class{
+            margin: 0 15px 0 15px;
+        }
+        .live-class{
+            color: orange;
+            padding-left: 3%;
+            font-size: 14px;
+            /* font-weight: 100; */
+        }
+        .live-class-time{
+            color: #1e49e5;
+            font-size: 16px;
+            font-weight: 100;
+        }
+        .live-class-time-expired{
+            color: #acacaf;
+            font-size: 13px;
+            font-weight: 100;
+            font-style: italic;
+        }
+        .accod-header{
+            padding: 2px 8px!important;
         }
         .card{
             width:100%!important;

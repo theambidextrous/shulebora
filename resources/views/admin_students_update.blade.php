@@ -246,7 +246,7 @@
                                                         @if($student['can_access_lesson'])
                                                         <input value="1" data-on-text="Yes" data-off-text="No" id="can_access_lesson" name="can_access_lesson" type="checkbox" checked data-on-color="info" data-off-color="default">
                                                         @else
-                                                        <input value="1" data-on-text="Yes" data-off-text="No" id="can_access_lesson" name="can_access_lesson" type="checkbox" data-on-color="info" data-off-color="default">
+                                                        <input value="0" data-on-text="Yes" data-off-text="No" id="can_access_lesson" name="can_access_lesson" type="checkbox" data-on-color="info" data-off-color="default">
                                                         @endif
                                                     </div>
                                                     <!-- end input -->
@@ -258,7 +258,7 @@
                                                         @if($student['is_paid'])
                                                         <input value="1" data-on-text="Yes" data-off-text="No" id="is_paid" name="is_paid" type="checkbox" checked data-on-color="info" data-off-color="default">
                                                         @else
-                                                        <input value="1" data-on-text="Yes" data-off-text="No" id="is_paid" name="is_paid" type="checkbox" data-on-color="info" data-off-color="default">
+                                                        <input value="0" data-on-text="Yes" data-off-text="No" id="is_paid" name="is_paid" type="checkbox" data-on-color="info" data-off-color="default">
                                                         @endif
                                                     </div>
                                                 </div>

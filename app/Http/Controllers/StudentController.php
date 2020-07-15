@@ -172,8 +172,8 @@ class StudentController extends Controller
             $student->name = $input['name'];
             $student->email = $input['email'];
             $student->phone = $input['phone'];
-            $student->email = $input['email'];
             $student->gender = $input['gender'];
+            $student->school = $input['school'];
             $student->group = $input['group'];
             $student->level = $input['level'];
             $student->save();
@@ -255,8 +255,38 @@ class StudentController extends Controller
             ]);
           }
     }
-    protected function student_list()
+
+    public function high()
     {
+        if(!Auth::user()->is_admin){
+            abort(404); 
+        }
+        return view('admin_students')->with([
+            'p_title' => 'High School Students',
+            'students' => $this->student_list(2),
+            'groups' => $this->group_list(),
+            'classes' => $this->class_list(),
+            'forms' => $this->form_list()
+        ]);
+    }
+    public function prim()
+    {
+        if(!Auth::user()->is_admin){
+            abort(404); 
+        }
+        return view('admin_students')->with([
+            'p_title' => 'Primary School Students',
+            'students' => $this->student_list(1),
+            'groups' => $this->group_list(),
+            'classes' => $this->class_list(),
+            'forms' => $this->form_list()
+        ]);
+    }
+    protected function student_list($group = 0)
+    {
+        if( $group > 0){
+            return User::where('is_learner', true)->where('is_active', true)->where('group', $group)->get()->toArray();
+        }
         return User::where('is_learner', true)->where('is_active', true)->get()->toArray();
     }
     protected function group_list()

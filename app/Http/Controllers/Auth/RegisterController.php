@@ -8,6 +8,7 @@ use App\User;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
 
 class RegisterController extends Controller
 {
@@ -29,7 +30,21 @@ class RegisterController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = RouteServiceProvider::HOME;
+    // protected $redirectTo = RouteServiceProvider::HOME;
+    public function redirectTo(){
+        if( Auth::user()->is_admin ){
+           return route('school');
+        }
+        if( Auth::user()->is_cop ){
+            return route('corporate');
+        }
+        if( Auth::user()->is_teacher ){
+            return route('teacher');
+        }
+        if( Auth::user()->is_learner ){
+            return route('learner');
+        }
+    }
 
     /**
      * Create a new controller instance.
@@ -38,6 +53,7 @@ class RegisterController extends Controller
      */
     public function __construct()
     {
+        abort(404);
         $this->middleware('guest');
     }
 
@@ -65,9 +81,10 @@ class RegisterController extends Controller
     protected function create(array $data)
     {
         return User::create([
-            'name' => $data['name'],
+            'name' => strtoupper($data['name']),
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
+            'is_active' => true,
         ]);
     }
 }

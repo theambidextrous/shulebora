@@ -7,6 +7,8 @@ use Illuminate\Http\Response;
 use App\Gclass;
 use App\Form;
 use App\Subject;
+use App\Tsubject;
+use App\Curriculum;
 use Illuminate\Support\Facades\Auth;
 use Validator;
 
@@ -34,6 +36,17 @@ class SubjectController extends Controller
         }
         return view('admin_subjects')->with([
             'subjects' => $this->subject_list(),
+            'forms' => $this->form_list(),
+            'classes' => $this->class_list()
+        ]);
+    }
+    public function teacher_index()
+    {
+        if(!Auth::user()->is_teacher){
+            abort(404); 
+        }
+        return view('teacher_subjects')->with([
+            'subjects' => $this->teacher_subject_list(),
             'forms' => $this->form_list(),
             'classes' => $this->class_list()
         ]);
@@ -138,7 +151,7 @@ class SubjectController extends Controller
                 'classes' => $this->class_list()
             ]);
 
-          } catch(\Illuminate\Database\QueryException $ex){ 
+        } catch(\Illuminate\Database\QueryException $ex){ 
             return view('admin_subjects_update')->with([
                 'flag' => 3,
                 'subject' => $this_subject,
@@ -147,11 +160,106 @@ class SubjectController extends Controller
                 'forms' => $this->form_list(),
                 'classes' => $this->class_list()
             ]);
-          }
+        }
     }
-    protected function subject_list()
+    public function update_topics(Request $request, $subject)
     {
+        if(!Auth::user()->is_admin){
+            abort(404); 
+        }
+        try { 
+            $this_subject = Subject::find($subject)->toArray();
+            Validator::make($request->all(),[
+                'topic' => 'string|required',
+                'number' => 'integer|required',
+                'required_lessons' => 'integer|required'
+            ])->validate();
+            $input = $request->all();
+            $input['topic'] = trim(strtoupper($request->get('topic')));
+            $input['subject'] = $subject;
+            $curriculum = Curriculum::create($input);
+            return back()->with([
+                'flag' => 1,
+                'subject' => $this_subject,
+                'subjects' => $this->subject_list(),
+                'msg' => 'Topic added!',
+                'forms' => $this->form_list(),
+                'classes' => $this->class_list()
+            ]);
+        } catch(\Illuminate\Database\QueryException $ex){ 
+            return back()->with([
+                'flag' => 3,
+                'subject' => $this_subject,
+                'subjects' => $this->subject_list(),
+                'msg' => 'Database error' . $ex->getMessage(),
+                'forms' => $this->form_list(),
+                'classes' => $this->class_list()
+            ]);
+        }
+    }
+    public function drop_topic($topic)
+    {
+        if(!Auth::user()->is_admin){
+            abort(404); 
+        }
+        try { 
+            Curriculum::find($topic)->delete();
+            return back()->with([
+                'flag' => 1,
+                'subjects' => $this->subject_list(),
+                'msg' => 'Topic dropped!',
+                'forms' => $this->form_list(),
+                'classes' => $this->class_list()
+            ]);
+        }catch(\Illuminate\Database\QueryException $ex){ 
+            return back()->with([
+                'flag' => 3,
+                'subjects' => $this->subject_list(),
+                'msg' => 'Database error' . $ex->getMessage(),
+                'forms' => $this->form_list(),
+                'classes' => $this->class_list()
+            ]);
+        }
+    }
+    public function high()
+    {
+        if(!Auth::user()->is_admin){
+            abort(404); 
+        }
+        return view('admin_subjects')->with([
+            'p_title' => 'High School Subjects',
+            'subjects' => $this->subject_list(2),
+            'msg' => 'Topic dropped!',
+            'forms' => $this->form_list(),
+            'classes' => $this->class_list()
+        ]);
+    }
+    public function prim()
+    {
+        if(!Auth::user()->is_admin){
+            abort(404); 
+        }
+        return view('admin_subjects')->with([
+            'p_title' => 'Primary School Subjects',
+            'subjects' => $this->subject_list(1),
+            'msg' => 'Topic dropped!',
+            'forms' => $this->form_list(),
+            'classes' => $this->class_list()
+        ]);
+    }
+    protected function subject_list($is_what = 0)
+    {
+        if($is_what > 0){
+            return Subject::where('is_active', true)->where('is_what', $is_what)->get()->toArray();
+        }
         return Subject::where('is_active', true)->get()->toArray();
+    }
+    protected function teacher_subject_list($is_what = 0)
+    {
+        $assigned_sub = Tsubject::select('subject')
+            ->where('teacher', Auth::user()->id)->get()->toArray();
+        return Subject::where('is_active', true)
+            ->whereIn('id', $assigned_sub)->get()->toArray();
     }
     protected function form_list()
     {
