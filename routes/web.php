@@ -14,17 +14,34 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', 'WelcomeController@index')->name('welcome');
+Route::get('/invalid/action', 'HomeController@lost')->name('lost');
 /**guest student */
 Route::get('/new/student', 'GuestController@showRegistrationForm')->name('student_form');
 Route::post('/new/student', 'GuestController@register')->name('student_create');
-/** payment */
+/**guest corporate */
+Route::get('/new/corporate', 'CorpController@showRegistrationForm')->name('corporate_form');
+Route::post('/new/corporate', 'CorpController@register')->name('corporate_create');
+/** payment
+ * learners
+ */
 Route::get('/shule/bora/learner/buy', 'BuyerController@showPackagesForm')->name('buy');
 Route::post('/shule/bora/learner/buy', 'BuyerController@order')->name('order');
 Route::post('/shule/bora/learner/pay', 'BuyerController@pay')->name('pay');
 Route::get('/shule/bora/learner/paymentform', 'BuyerController@showPaymentForm')->name('payform');
+/** payment
+ * coprorates
+ */
+Route::post('/shule/bora/corp/buy', 'BuyerController@corp_order')->name('corp_order');
+Route::post('/shule/bora/corp/pay', 'BuyerController@corp_pay')->name('corp_pay');
+Route::get('/shule/bora/corp/paymentform', 'BuyerController@corp_showPaymentForm')->name('corp_payform');
+
 /** callback */
-Route::get('/input-streams/pay/c2b', 'CallbackController@c2b')->name('callback');
-Route::get('/input-streams/pay/express', 'CallbackController@express')->name('express');
+Route::any('/input-streams/pay/c2b', 'CallbackController@c2b')->name('callback');
+Route::any('/input-streams/pay/express', 'CallbackController@express')->name('express');
+Route::any('/input-streams/pay/status/{order}', 'CallbackController@status_check')->name('status_check');
+/** freebies */
+Route::get('/free-lessons/ebooks', 'GuestController@free_files')->name('free_files');
+Route::get('/free-lessons/videos', 'GuestController@free_videos')->name('free_videos');
 
 Auth::routes();
 
@@ -89,6 +106,11 @@ Route::group(['prefix' => 'shule/bora/admin', 'as' => 'admin.'], function(){
     Route::get('lessons/{id}', 'LessonController@show')->name('lesson');
     Route::post('lessons', 'LessonController@create')->name('add_lesson');
     Route::post('lessons/{id}', 'LessonController@update')->name('update_lesson');
+    /** live sessions */
+    Route::get('csessions', 'CsessionController@index')->name('csessions');
+    Route::get('csessions/{id}', 'CsessionController@show')->name('csession');
+    Route::post('csessions', 'CsessionController@create')->name('add_csession');
+    Route::post('csessions/{id}', 'CsessionController@update')->name('update_csession');
     /** content stream secured*/
     Route::get('stream/{file}', 'LessonController@stream')->name('securefinder');
     
@@ -122,6 +144,9 @@ Route::group(['prefix' => 'shule/bora/teacher', 'as' => 'teacher.'], function(){
     Route::get('lessons/{id}', 'LessonController@teacher_show')->name('lesson');
     Route::post('lessons', 'LessonController@teacher_create')->name('add_lesson');
     Route::post('lessons/{id}', 'LessonController@teacher_update')->name('update_lesson');
+    /** forums */
+    Route::get('forums/{subject}', 'SubjectController@teacher_forum')->name('forums');
+    Route::post('forums/answer', 'SubjectController@teacher_forum_answer')->name('fanswer');
     /** subjects */
     Route::get('subjects', 'SubjectController@teacher_index')->name('subjects');
     /** papers */
@@ -140,4 +165,9 @@ Route::group(['prefix' => 'shule/bora/learner', 'as' => 'learner.'], function(){
     Route::get('lessons/topic/{topic}', 'LearnerController@topic_lesson')->name('topic_lesson');
     Route::get('assignments', 'LearnerController@assigns')->name('assigns');
     Route::get('papers', 'LearnerController@papers')->name('papers');
+    Route::get('accounts', 'LearnerController@accounts')->name('accounts');
+});
+/** corporate routes */
+Route::group(['prefix' => 'shule/bora/corporate', 'as' => 'corporate.'], function(){
+    Route::get('accounts', 'HomeController@corp_accounts')->name('accounts');
 });

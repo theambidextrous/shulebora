@@ -28,10 +28,10 @@
                             <div class="col-md-12">
                                 <!-- email -->
                                 <div class="form-group mb-4">
-                                    <input type="email" name="email" class="form-control @error('email') is-invalid @enderror" id="email" data-toggle="tooltip"
-                                        data-placement="bottom" title="your email here" value="{{ old('email') }}" required autocomplete="email" autofocus>
+                                    <input type="text" name="email" class="form-control @error('email') is-invalid @enderror" id="email" data-toggle="tooltip"
+                                        data-placement="bottom" title="your phone or email here" value="{{ old('email') }}" required autocomplete="email" autofocus>
                                     <span class="bar"></span>
-                                    <label for="email">Email Address</label>
+                                    <label for="email">Phone Number or email</label>
                                         @error('email')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>

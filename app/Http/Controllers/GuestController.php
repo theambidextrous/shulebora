@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use App\Providers\RouteServiceProvider;
 use App\User;
 use App\Group;
 use App\Package;
+use App\Lesson;
 use App\Gclass;
 use App\Form;
 use Illuminate\Foundation\Auth\RegistersUsers;
@@ -70,9 +72,9 @@ class GuestController extends Controller
     {
         return Validator::make($data, [
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'phone' => ['required', 'string','max:15'],
-            'gender' => ['required', 'string', 'max:10'],
+            // 'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'phone' => ['required', 'string','max:13','unique:users'],
+            // 'gender' => ['required', 'string', 'max:10'],
             'class_form' => ['required', 'string'],
             'school' => ['required', 'string'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
@@ -88,8 +90,9 @@ class GuestController extends Controller
     protected function create(array $data)
     {
         $data['name'] = trim(strtoupper($data['name']));
+        $data['email'] = $data['phone'] . "@shulebora.com";
         $data['school'] = trim(strtoupper($data['school']));
-        $data['gender'] = trim(strtoupper($data['gender']));
+        $data['gender'] = "None";
         $data['phone'] = $this->format_tel(trim(strtoupper($data['phone'])));
         $w_str = explode('~', $data['class_form']);
         $data['level'] = trim($w_str[1]);
@@ -109,7 +112,40 @@ class GuestController extends Controller
         //     'is_active' => true,
         // ]);
     }
-    
+    /** 
+     * this is for free pages
+     * evaluation lessons
+    */
+    public function free_files()
+    {
+        $lessons = Lesson::orderBy('created_at', 'desc')
+            ->where('type','RECORDED')
+            ->where('file_content', '!=', 'n/a')
+            ->where('is_paid', false)
+            ->where('is_active', true)->get();
+        $res = [];
+        if($lessons){
+            $res = $lessons->toArray();
+            return view('free_files')->with([
+                'lessons' => $lessons
+            ]);
+        }
+    }
+    public function free_videos()
+    {
+        $lessons = Lesson::orderBy('created_at', 'desc')
+            ->where('type','RECORDED')
+            ->where('video_content', '!=', 'n/a')
+            ->where('is_paid', false)
+            ->where('is_active', true)->get();
+        $res = [];
+        if($lessons){
+            $res = $lessons->toArray();
+            return view('free_videos')->with([
+                'lessons' => $lessons
+            ]);
+        }
+    }
     protected function package_list()
     {
         return Package::where('is_active', true)->get()->toArray();
@@ -158,10 +194,10 @@ class GuestController extends Controller
             return $phone = '+254'.(int)$phone;
         }
         elseif( substr( $tel, 0, 1 ) === "7" && strlen($tel) == 9 ){
-            return $phone = '+254'.(int)$phone;
+            return $phone = '+254'.(int)$tel;
         }
         elseif( substr( $tel, 0, 1 ) === "1" && strlen($tel) == 9 ){
-            return $phone = '+254'.(int)$phone;
+            return $phone = '+254'.(int)$tel;
         }
         elseif( substr( $tel, 0, 5 ) === "+2547" && strlen($tel) == 13 ){
             return $phone = $tel;

@@ -230,17 +230,7 @@
                                                             </span>
                                                         @enderror
                                                     </div>
-                                                    <div class="form-group mb-4">
-                                                        <label for="audio_content">Upload audio(mp3,mp4) </label>
-                                                        <input type="file" name="audio_content" class="form-control @error('audio_content') is-invalid @enderror" id="audio_content" data-toggle="tooltip"
-                                                            data-placement="bottom" title="audio_content here" value="{{ old('audio_content') }}"  autocomplete="audio_content">
-                                                        <span class="bar"></span>
-                                                        @error('audio_content')
-                                                            <span class="invalid-feedback" role="alert">
-                                                                <strong>{{ $message }}</strong>
-                                                            </span>
-                                                        @enderror
-                                                    </div>
+                                                    <input type="hidden" name="audio_content" value="n/a"/>
                                                     <div class="form-group mb-4">
                                                         <label for="video_content">Upload video(mp4,avi,mp3) </label>
                                                         <input type="file" name="video_content" class="form-control @error('video_content') is-invalid @enderror" id="video_content" data-toggle="tooltip"
@@ -277,15 +267,10 @@
                                                         @enderror
                                                     </div>
                                                     <div class="form-group mb-4">
-                                                        <label for="zoom_help_note">Zoom Note to learners </label>
-                                                        <input type="datetime" name="zoom_help_note" class="form-control @error('zoom_help_note') is-invalid @enderror" id="zoom_help_note" data-toggle="tooltip"
-                                                            data-placement="bottom" title="zoom note here" value="{{ $lesson['zoom_help_note'] }}" placeholder="for live lessons">
+                                                        <!-- <label for="zoom_help_note">Zoom Note to learners </label> -->
+                                                        <input type="hidden" name="zoom_help_note" class="form-control @error('zoom_help_note') is-invalid @enderror" id="zoom_help_note" data-toggle="tooltip"
+                                                            data-placement="bottom" title="zoom note here" value="See you all there" placeholder="for live lessons">
                                                         <span class="bar"></span>
-                                                        @error('zoom_help_note')
-                                                            <span class="invalid-feedback" role="alert">
-                                                                <strong>{{ $message }}</strong>
-                                                            </span>
-                                                        @enderror
                                                     </div>
                                                 </div>
                                             </div>

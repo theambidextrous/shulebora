@@ -81,9 +81,6 @@
             <div class="col-lg-12 col-md-12">
                 <div class="card blog-widget">
                     <div class="card-body">
-                        <div class="d-flex flex-wrap">
-                            <div><h3 class="card-title">{{$p_title??'All Lessons'}}</h3></div>
-                        </div>
                         @if(isset($flag)&&$flag==1)
                             <div class="alert alert-success">{{$msg}}</div>
                         @elseif(isset($flag)&&$flag==2)
@@ -105,64 +102,38 @@
                             <!-- datatable -->
                             <div class="card">
                             <div class="card-body" style="width:100%!important;">
-                                <h6 class="card-subtitle">List of all lessons items across all subjects</a></h6>
+                                <div class="d-flex flex-wrap">
+                                    <div><h3 class="card-title">Upcoming Live Lessons</h3></div>
+                                </div>
                                 <div class="table-responsive">
                                     <table style="width:100%!important;" id="file_export" class="table table-striped table-bordered display">
                                         <thead>
                                             <tr>
                                                 <th>Teacher</th>
                                                 <th>Topic</th>
-                                                <th>Type</th>
                                                 <th>Sub topic</th>
-                                                <th>File Upload</th>
-                                                <th>Video Upload</th>
-                                                <th>Audio Upload</th>
                                                 <th>Zoom Link</th>
                                                 <th>Zoom Time</th>
                                                 <th>Kind</th>
-                                                <th>Attendance</th>
                                                 <th>Manage</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             @if(count($lessons))
                                             @foreach( $lessons as $lesson)
+                                            @if($lesson['type'] == 'LIVE')
                                             @php($kind = ($lesson['is_paid']==1)?'PAID':'FREE')
-                                            @php($file_c = route('admin.securefinder', ['file'=>$lesson['file_content']]) )
-                                            @php($video_c = route('admin.securefinder', ['file'=>$lesson['video_content']]) )
-                                            @php($audio_c = route('admin.securefinder', ['file'=>$lesson['audio_content']]) )
+                                            @php($teacher = App\User::find($lesson['teacher'])->name)
                                             <tr>
-                                                <td>{{App\User::find($lesson['teacher'])->name}}</td>
-                                                <td>{{App\Curriculum::find($lesson['topic'])->topic}}</td>
-                                                <td>{{$lesson['type']}}</td>
-                                                <td>{{$lesson['sub_topic']}}</td>
-                                                <td>
-                                                    @if($lesson['file_content'] == 'n/a')
-                                                    {{$lesson['file_content']}}
-                                                    @else
-                                                    <a href="{{$file_c}}" target="_blank">view</a>
-                                                    @endif
-                                                </td>
-                                                <td>
-                                                    @if($lesson['video_content'] == 'n/a')
-                                                    {{$lesson['video_content']}}
-                                                    @else
-                                                    <a href="{{$video_c}}" target="_blank">view</a>
-                                                    @endif
-                                                </td>
-                                                <td>
-                                                    @if($lesson['audio_content'] == 'n/a')
-                                                    {{$lesson['audio_content']}}
-                                                    @else
-                                                    <a href="{{$audio_c}}" target="_blank">view</a>
-                                                    @endif
-                                                </td>
+                                                <td>{{strtolower($teacher)}}</td>
+                                                <td>{{strtolower(App\Curriculum::find($lesson['topic'])->topic)}}</td>
+                                                <td>{{strtolower($lesson['sub_topic'])}}</td>
                                                 <td>{{$lesson['zoom_link']}}</td>
                                                 <td>{{$lesson['zoom_time']}}</td>
                                                 <td>{{$kind}}</td>
-                                                <td>{{$lesson['quorum']}}</td>
-                                                <td><a href="{{ url('shule/bora/admin/lessons/' . $lesson['id']) }}" class="btn btn-link"><i class="mdi mdi-table-edit"></i>Manage</a></td>
+                                                <td><a href="{{ url('shule/bora/admin/lessons/' . $lesson['id']) }}" class="btn btn-link"><i class="mdi mdi-table-edit"></i>Edit</a></td>
                                             </tr>
+                                            @endif
                                             @endforeach
                                             @endif
                                         </tbody>
@@ -170,21 +141,79 @@
                                             <tr>
                                                 <th>Teacher</th>
                                                 <th>Topic</th>
-                                                <th>Type</th>
                                                 <th>Sub topic</th>
-                                                <th>File Upload</th>
-                                                <th>Video Upload</th>
-                                                <th>Audio Upload</th>
                                                 <th>Zoom Link</th>
                                                 <th>Zoom Time</th>
                                                 <th>Kind</th>
-                                                <th>Attendance</th>
                                                 <th>Manage</th>
                                             </tr>
                                         </tfoot>
                                     </table>
                                 </div>
                             <!-- end datatable -->
+                            <!-- RECORDED -->
+                            <div class="d-flex flex-wrap">
+                                <div><h3 class="card-title">Recorded Lessons</h3></div>
+                            </div>
+                            <div class="table-responsive">
+                                <table style="width:100%!important;" id="file_export" class="table table-striped table-bordered display">
+                                    <thead>
+                                        <tr>
+                                            <th>Teacher</th>
+                                            <th>Topic</th>
+                                            <th>Sub topic</th>
+                                            <th>File Upload</th>
+                                            <th>Video Upload</th>
+                                            <th>Kind</th>
+                                            <th>Manage</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if(count($lessons))
+                                        @foreach( $lessons as $lesson)
+                                        @if($lesson['type'] == 'RECORDED')
+                                        @php($kind = ($lesson['is_paid']==1)?'PAID':'FREE')
+                                        @php($file_c = route('admin.securefinder', ['file'=>$lesson['file_content']]) )
+                                        @php($video_c = route('admin.securefinder', ['file'=>$lesson['video_content']]) )
+                                        <tr>
+                                            <td>{{strtolower(App\User::find($lesson['teacher'])->name)}}</td>
+                                            <td>{{strtolower(App\Curriculum::find($lesson['topic'])->topic)}}</td>
+                                            <td>{{$lesson['sub_topic']}}</td>
+                                            <td>
+                                                @if($lesson['file_content'] == 'n/a')
+                                                {{$lesson['file_content']}}
+                                                @else
+                                                <a href="{{$file_c}}" target="_blank">view</a>
+                                                @endif
+                                            </td>
+                                            <td>
+                                                @if($lesson['video_content'] == 'n/a')
+                                                {{$lesson['video_content']}}
+                                                @else
+                                                <a href="{{$video_c}}" target="_blank">view</a>
+                                                @endif
+                                            </td>
+                                            <td>{{$kind}}</td>
+                                            <td><a href="{{ url('shule/bora/admin/lessons/' . $lesson['id']) }}" class="btn btn-link"><i class="mdi mdi-table-edit"></i>edit</a></td>
+                                        </tr>
+                                        @endif
+                                        @endforeach
+                                        @endif
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <th>Teacher</th>
+                                            <th>Topic</th>
+                                            <th>Sub topic</th>
+                                            <th>File Upload</th>
+                                            <th>Video Upload</th>
+                                            <th>Kind</th>
+                                            <th>Manage</th>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                            <!-- end recorded -->
                             </div>
                             </div><!-- inner card  -->
                         </div>
@@ -197,7 +226,7 @@
         <!-- ===================================================================== -->
         <!-- page_modals -->
         <!-- Signup modal content -->
-        <div id="new_lesson_modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+        <div id="new_lesson_modal" class="modal fade" role="dialog" aria-hidden="true">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-body">
@@ -218,7 +247,7 @@
                                             <option value="nn">Select Topic</option>
                                             @if(count($topics))
                                             @foreach($topics as $tpc)
-                                            <option value="{{$tpc['id']}}">{{$tpc['topic']}}</option>
+                                            <option value="{{$tpc['id']}}">{{$tpc['topic']}} - <small style="color:#1e88e5;font-weight:300;font-size:11px;">({{ucwords(strtolower(App\Subject::find($tpc['subject'])->name))}})</small></option>
                                             @endforeach
                                             @endif
                                         </select>
@@ -254,7 +283,7 @@
                                     <div class="form-group mb-2">
                                         <select name="category" id="category" class="form-control select2 no-float" autofocus >
                                             <option value="nn">Select Category</option>
-                                            <option value="PAID">Paid</option>
+                                            <option selected value="PAID">Paid</option>
                                             <option value="FREE">Free</option>
                                         </select>
                                     </div>
@@ -282,17 +311,7 @@
                                             </span>
                                         @enderror
                                     </div>
-                                    <div class="form-group mb-4">
-                                        <label for="audio_content">Upload audio(mp3,mp4) </label>
-                                        <input type="file" name="audio_content" class="form-control @error('audio_content') is-invalid @enderror" id="audio_content" data-toggle="tooltip"
-                                            data-placement="bottom" title="audio_content here" value="{{ old('audio_content') }}"  autocomplete="audio_content">
-                                        <span class="bar"></span>
-                                        @error('audio_content')
-                                            <span class="invalid-feedback" role="alert">
-                                                <strong>{{ $message }}</strong>
-                                            </span>
-                                        @enderror
-                                    </div>
+                                    <input type="hidden" name="audio_content" value="n/a"/>
                                      <div class="form-group mb-4">
                                         <label for="video_content">Upload video(mp4,avi,mp3) </label>
                                         <input type="file" name="video_content" class="form-control @error('video_content') is-invalid @enderror" id="video_content" data-toggle="tooltip"
@@ -329,9 +348,9 @@
                                         @enderror
                                     </div>
                                     <div class="form-group mb-4">
-                                        <label for="zoom_help_note">Zoom Note to learners </label>
-                                        <input type="datetime" name="zoom_help_note" class="form-control @error('zoom_help_note') is-invalid @enderror" id="zoom_help_note" data-toggle="tooltip"
-                                            data-placement="bottom" title="zoom note here" value="{{ old('zoom_help_note') }}" placeholder="for live lessons">
+                                        <!-- <label for="zoom_help_note">Zoom Note to learners </label> -->
+                                        <input type="hidden" name="zoom_help_note" class="form-control @error('zoom_help_note') is-invalid @enderror" id="zoom_help_note" data-toggle="tooltip"
+                                            data-placement="bottom" title="zoom note here" value="See you all there" placeholder="for live lessons">
                                         <span class="bar"></span>
                                         @error('zoom_help_note')
                                             <span class="invalid-feedback" role="alert">

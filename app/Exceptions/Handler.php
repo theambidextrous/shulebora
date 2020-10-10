@@ -54,6 +54,7 @@ class Handler extends ExceptionHandler
         // {
             // return response(['what-happened' => 'Module under construction']);
         // }
+        // return redirect()->route('lost');
         return parent::render($request, $exception);
     }
 }

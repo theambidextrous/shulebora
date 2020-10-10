@@ -46,7 +46,9 @@ class MpesaExpressController extends Controller
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
         $curl_response = curl_exec($curl);
-        // print_r($curl_response);
+        // print_r(curl_getinfo($curl));
+        // print_r('respo::: ' . $curl_response);
+        // return $curl_response;
         return json_decode($curl_response)->access_token;
 	}
 	function TriggerStkPush(){

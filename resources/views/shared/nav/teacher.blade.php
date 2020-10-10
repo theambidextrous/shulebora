@@ -23,7 +23,7 @@
 <li class="sidebar-item">
     <a class="sidebar-link has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="mdi mdi-calendar-question"></i><span class="hide-menu">Assessments</span></a>
     <ul aria-expanded="false" class="collapse first-level">
-        <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark" href="{{route('teacher.assignments')}}"><i class="mdi mdi-collage"></i><span class="hide-menu">Assignments</span></a></li>
+        <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark" href="{{route('teacher.assignments')}}"><i class="mdi mdi-collage"></i><span class="hide-menu">Topical Questions</span></a></li>
         <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark" href="{{route('teacher.papers')}}"><i class="mdi mdi-collage"></i><span class="hide-menu">Revison Papers</span></a></li>
     </ul>
 </li>

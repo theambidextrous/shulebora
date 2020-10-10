@@ -1,8 +1,12 @@
 <nav class="navbar top-navbar navbar-expand-lg navbar-dark">
     <div class="navbar-header logo-bar">
         <!-- This is for the sidebar toggle which is visible on mobile only -->
-        <a class="nav-toggler waves-effect waves-light d-block d-lg-none" href="javascript:void(0)"><i
-                class="ti-menu ti-close"></i></a>
+        <a class="nav-toggler waves-effect waves-light d-block d-lg-none" href="javascript:void(0)">
+            @guest
+            @else
+            <i class="ti-menu ti-close"></i>
+            @endguest
+            </a>
         <!-- ============================================================== -->
         <!-- Logo -->
         <!-- ============================================================== -->
@@ -32,8 +36,7 @@
         <!-- ============================================================== -->
         <a class="topbartoggler d-block d-lg-none waves-effect waves-light" href="javascript:void(0)"
             data-toggle="collapse" data-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><i
-                class="ti-more"></i></a>
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><i style="font-size:20px;" class="ti-menu ti-close"></i></a>
     </div>
     <!-- ============================================================== -->
     <!-- End Logo -->
@@ -43,114 +46,30 @@
             <!-- ============================================================== -->
             <!-- Search -->
             <!-- ============================================================== -->
-            <li class="nav-item d-none d-md-block search-box">
-                <a class="nav-link d-none d-md-block waves-effect waves-dark" href="javascript:void(0)">
-                    <!-- <i class="ti-search"></i> -->
-                </a>
-                <!-- <form class="app-search">
-                    <input type="text" class="form-control" placeholder="Search & enter"> 
-                    <a class="srh-btn"><i class="ti-close"></i></a> 
-                </form> -->
-            </li>
         </ul>
         <!-- ============================================================== -->
         <!-- Right side toggle and nav items -->
         <!-- ============================================================== -->
-        <ul class="navbar-nav float-right">
-            <!-- Authentication Links -->
-            <!-- Authentication Links -->
             @guest
-                <li class="nav-item"><a class="nav-link" href="{{ url('/') }}">Ebooks</a></li>
-                
-                <li class="nav-item"><a class="nav-link" href="{{ url('/') }}">Videos</a></li>
-
-                <li class="nav-item"><a class="nav-link" href="{{ url('/') }}">FAQs</a></li>
-
-                <!-- <li class="nav-item"><a class="nav-link" href="{{ url('/') }}">eBooks</a></li> -->
-                
-                <li class="nav-item"><a class="nav-link" href="{{ route('login') }}"><span class="auth-links"><i class="mdi mdi-lock"></i>Login</span></a></li>
-
-                @if (Route::has('register'))
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('student_form') }}">
-                            <span class="auth-links"><i class="mdi mdi-account-circle"></i>
-                            Register</span>
-                        </a>
-                    </li>
-                @endif
+            <ul class="navbar-nav guest-menu">
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('free_files') }}">Printable Notes</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('free_videos') }}">Videos</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('login') }}"><i class="mdi mdi-lock"></i>Login</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('student_form') }}"><i class="mdi mdi-account-circle"></i>Register</a>
+                </li>
+            </ul>
             @else
             <!-- ============================================================== -->
-            <!-- Comment -->
-            <!-- ============================================================== -->
-            <!-- <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle waves-effect waves-dark" href="" data-toggle="dropdown"
-                    aria-haspopup="true" aria-expanded="false"> <i class="mdi mdi-message"></i>
-                    <div class="notify"> <span class="heartbit--"></span> <span class="point"></span> </div>
-                </a>
-                <div class="dropdown-menu dropdown-menu-right mailbox scale-up">
-                    <ul class="list-style-none">
-                        <li>
-                            <div class="border-bottom rounded-top py-3 px-4">
-                                <h5 class="mb-0 font-weight-medium">Notifications</h5>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="message-center notifications position-relative" style="height:250px;">
-                                <a href="javascript:void(0)" class="message-item d-flex align-items-center border-bottom px-3 py-2">
-                                    <span class="btn btn-danger rounded-circle btn-circle"><i class="fa fa-link"></i></span>
-                                    <div class="w-75 d-inline-block v-middle pl-2">
-                                        <h5 class="message-title mb-0 mt-1">Luanch Admin</h5> <span class="font-12 text-nowrap d-block text-muted text-truncate">Just see the my new admin!</span> <span class="font-12 text-nowrap d-block text-muted">9:30 AM</span>
-                                    </div>
-                                </a>
-                            </div>
-                        </li>
-                        <li>
-                            <a class="nav-link border-top text-center text-dark pt-3" href="javascript:void(0);"> <strong>Check all notifications</strong> <i class="fa fa-angle-right"></i> </a>
-                        </li>
-                    </ul>
-                </div>
-            </li> -->
-            <!-- ============================================================== -->
-            <!-- End Comment -->
-            <!-- ============================================================== -->
-            <!-- ============================================================== -->
-            <!-- Messages -->
-            <!-- ============================================================== -->
-            <!-- <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle waves-effect waves-dark" href="" id="2"
-                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i
-                        class="mdi mdi-email"></i>
-                    <div class="notify"> <span class="heartbit--"></span> <span class="point"></span> </div>
-                </a>
-                <div class="dropdown-menu mailbox dropdown-menu-right scale-up" aria-labelledby="2">
-                    <ul class="list-style-none">
-                        <li>
-                            <div class="border-bottom rounded-top py-3 px-4">
-                                <h5 class="font-weight-medium mb-0">You have 4 new messages</h5>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="message-center message-body position-relative" style="height:250px;">
-                                <a href="javascript:void(0)" class="message-item d-flex align-items-center border-bottom px-3 py-2">
-                                    <span class="user-img position-relative d-inline-block"> <img src="{{asset('icons/avatar.png')}}" alt="user" class="rounded-circle w-100"> <span class="profile-status rounded-circle online"></span> </span>
-                                    <div class="w-75 d-inline-block v-middle pl-2">
-                                        <h5 class="message-title mb-0 mt-1">Sender name</h5> <span class="font-12 text-nowrap d-block text-muted text-truncate">Just see the my admin!</span> <span class="font-12 text-nowrap d-block text-muted">9:30 AM</span>
-                                    </div>
-                                </a>
-                            </div>
-                        </li>
-                        <li>
-                            <a class="nav-link border-top text-center text-dark pt-3" href="javascript:void(0);"> <b>See all e-Mails</b> <i class="fa fa-angle-right"></i> </a>
-                        </li>
-                    </ul>
-                </div>
-            </li> -->
-            <!-- ============================================================== -->
-            <!-- End Messages -->
-            <!-- ============================================================== -->
-            <!-- ============================================================== -->
-            <!-- Profile -->
-            <!-- ============================================================== -->
+            <ul class="navbar-nav float-right">
+            <!-- Authentication Links -->
+            <!-- Authentication Links -->
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle waves-effect waves-dark" href="" data-toggle="dropdown"
                     aria-haspopup="true" aria-expanded="false">
@@ -180,7 +99,7 @@
                     </ul>
                 </div>
             </li>
+            </ul>
             @endguest
-        </ul>
     </div>
 </nav>

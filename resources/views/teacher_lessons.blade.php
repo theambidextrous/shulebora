@@ -49,24 +49,8 @@
         <!-- Row -->
         <div class="row">
             <!-- Column -->
-            <div class="col-lg-3 col-md-12">
-                <div class="card blog-widget">
-                    <div class="card-body">
-                        <h4 class="card-title">Quick Links</h4>
-                        <div class="list-group"> 
-                            <a href="javascript:void(0)" class="list-group-item">Navigation</a>
-                             <!-- semi-nav -->
-                             <a href="{{ route('teacher.lessons') }}" class="list-group-item active">My Lessons</a>
-                            <a href="{{ route('teacher.subjects') }}" class="list-group-item">My Subjects</a>
-                            <a href="{{ route('teacher.assignments') }}" class="list-group-item">Assignments</a>
-                            <a href="{{ route('teacher.papers') }}" class="list-group-item">Revision Papers</a>
-                            <!-- end semi-nav -->
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-9 col-md-12">
+            <!--  -->
+            <div class="col-lg-12 col-md-12">
                 <div class="card blog-widget">
                     <div class="card-body">
                         <div class="d-flex flex-wrap">
@@ -103,11 +87,9 @@
                                                 <th>Sub topic</th>
                                                 <th>File Upload</th>
                                                 <th>Video Upload</th>
-                                                <th>Audio Upload</th>
                                                 <th>Zoom Link</th>
                                                 <th>Zoom Time</th>
                                                 <th>Kind</th>
-                                                <th>Attendance</th>
                                                 <th>Manage</th>
                                             </tr>
                                         </thead>
@@ -136,17 +118,9 @@
                                                     <a href="{{$video_c}}" target="_blank">view</a>
                                                     @endif
                                                 </td>
-                                                <td>
-                                                    @if($lesson['audio_content'] == 'n/a')
-                                                    {{$lesson['audio_content']}}
-                                                    @else
-                                                    <a href="{{$audio_c}}" target="_blank">view</a>
-                                                    @endif
-                                                </td>
                                                 <td>{{$lesson['zoom_link']}}</td>
                                                 <td>{{$lesson['zoom_time']}}</td>
                                                 <td>{{$kind}}</td>
-                                                <td>{{$lesson['quorum']}}</td>
                                                 <td><a href="{{ url('shule/bora/teacher/lessons/' . $lesson['id']) }}" class="btn btn-link"><i class="mdi mdi-table-edit"></i>Manage</a></td>
                                             </tr>
                                             @endforeach
@@ -159,11 +133,9 @@
                                                 <th>Sub topic</th>
                                                 <th>File Upload</th>
                                                 <th>Video Upload</th>
-                                                <th>Audio Upload</th>
                                                 <th>Zoom Link</th>
                                                 <th>Zoom Time</th>
                                                 <th>Kind</th>
-                                                <th>Attendance</th>
                                                 <th>Manage</th>
                                             </tr>
                                         </tfoot>
@@ -254,17 +226,7 @@
                                             </span>
                                         @enderror
                                     </div>
-                                    <div class="form-group mb-4">
-                                        <label for="audio_content">Upload audio(mp3,mp4) </label>
-                                        <input type="file" name="audio_content" class="form-control @error('audio_content') is-invalid @enderror" id="audio_content" data-toggle="tooltip"
-                                            data-placement="bottom" title="audio_content here" value="{{ old('audio_content') }}"  autocomplete="audio_content">
-                                        <span class="bar"></span>
-                                        @error('audio_content')
-                                            <span class="invalid-feedback" role="alert">
-                                                <strong>{{ $message }}</strong>
-                                            </span>
-                                        @enderror
-                                    </div>
+                                    <input type="hidden" name="audio_content" value="n/a"/>
                                      <div class="form-group mb-4">
                                         <label for="video_content">Upload video(mp4,avi,mp3) </label>
                                         <input type="file" name="video_content" class="form-control @error('video_content') is-invalid @enderror" id="video_content" data-toggle="tooltip"

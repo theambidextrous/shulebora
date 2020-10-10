@@ -34,24 +34,29 @@
     </ul>
 </li>
 
-<li class="nav-small-cap"><i class="mdi mdi-dots-horizontal"></i> <span class="hide-menu">Timetables</span></li>
+<!-- <li class="nav-small-cap"><i class="mdi mdi-dots-horizontal"></i> <span class="hide-menu">Timetables</span></li>
 <li class="sidebar-item">
     <a class="sidebar-link has-arrow waves-effect waves-dark" href="{{ route('admin.timetables') }}" aria-expanded="false"><i class="mdi mdi-timetable"></i><span class="hide-menu">Timetables</span></a>
     <ul aria-expanded="false" class="collapse first-level">
         <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark" href="{{ route('admin.timetables') }}" aria-expanded="false"><i class="mdi mdi-collage"></i><span class="hide-menu">All timetables</span></a></li>
     </ul>
-</li>
+</li> -->
 
 <li class="nav-small-cap"><i class="mdi mdi-dots-horizontal"></i> <span class="hide-menu">Lessons</span></li>
 <li class="sidebar-item">
     <a class="sidebar-link waves-effect waves-dark" href="{{route('admin.lessons')}}" aria-expanded="false"><i class="mdi mdi-book-multiple"></i><span class="hide-menu">Lessons </span></a>
 </li>
 
+<li class="nav-small-cap"><i class="mdi mdi-dots-horizontal"></i> <span class="hide-menu">Corporate Sessions</span></li>
+<li class="sidebar-item">
+    <a class="sidebar-link waves-effect waves-dark" href="{{route('admin.csessions')}}" aria-expanded="false"><i class="mdi mdi-webcam"></i><span class="hide-menu">Corporate Sessions </span></a>
+</li>
+
 <li class="nav-small-cap"><i class="mdi mdi-dots-horizontal"></i> <span class="hide-menu">Assessments</span></li>
 <li class="sidebar-item">
     <a class="sidebar-link has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="mdi mdi-calendar-question"></i><span class="hide-menu">Assessments</span></a>
     <ul aria-expanded="false" class="collapse first-level">
-        <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark" href="{{route('admin.assignments')}}"><i class="mdi mdi-collage"></i><span class="hide-menu">Assignments</span></a></li>
+        <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark" href="{{route('admin.assignments')}}"><i class="mdi mdi-collage"></i><span class="hide-menu">Topical Questions</span></a></li>
         <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark" href="{{route('admin.papers')}}"><i class="mdi mdi-collage"></i><span class="hide-menu">Revison Papers</span></a></li>
     </ul>
 </li>

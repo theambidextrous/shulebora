@@ -33,6 +33,7 @@ class MpesaController extends Controller
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'GET');
         $res = curl_exec($curl);
+        // print_r('respo::: ' . $res . $this->consumer_key);
         if ( array_key_exists('access_token', json_decode($res, true)) ){
         	return json_decode($res)->access_token;
         }else{

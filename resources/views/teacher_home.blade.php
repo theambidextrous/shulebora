@@ -48,7 +48,7 @@
                              <!-- semi-nav -->
                              <a href="{{ route('teacher.lessons') }}" class="list-group-item">My Lessons</a>
                             <a href="{{ route('teacher.subjects') }}" class="list-group-item">My Subjects</a>
-                            <a href="{{ route('teacher.assignments') }}" class="list-group-item">Assignments</a>
+                            <a href="{{ route('teacher.assignments') }}" class="list-group-item">Topical Questions</a>
                             <a href="{{ route('teacher.papers') }}" class="list-group-item">Revision Papers</a>
                             <!-- end semi-nav -->
 
@@ -67,27 +67,36 @@
                             <div class="col-sm-12">
                                 <!-- tab cont -->
                                 <div class="table-responsive">
-                                    <table style="height:0px!important;" id="" class="table table-striped table-bordered display "
-                                        style="width:100%">
+                                    <table style="width:100%!important;" id="file_export" class="table table-striped table-bordered display">
                                         <thead>
                                             <tr>
-                                                <th>Name</th>
-                                                <th>Group</th>
-                                                <th>Level</th>
+                                                <th>Topic</th>
+                                                <th>Type</th>
+                                                <th>Sub topic</th>
+                                                <th>Class Time</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr>
-                                                <td>Tiger Nixon</td>
-                                                <td>Secondary</td>
-                                                <td>F1</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Well Amorny</td>
-                                                <td>Primary</td>
-                                                <td>C6</td>
-                                            </tr>
+                                            @if(count($lessons))
+                                            @foreach( $lessons as $lesson)
+                                                @php($kind = ($lesson['is_paid']==1)?'PAID':'FREE')
+                                                <tr>
+                                                    <td>{{App\Curriculum::find($lesson['topic'])->topic}}</td>
+                                                    <td>{{$lesson['type']}}</td>
+                                                    <td>{{$lesson['sub_topic']}}</td>
+                                                    <td>{{date('M jS, Y h:i a', strtotime($lesson['zoom_time']))}}</td>
+                                                </tr>
+                                            @endforeach
+                                            @endif
                                         </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <th>Topic</th>
+                                                <th>Type</th>
+                                                <th>Sub topic</th>
+                                                <th>Class Time</th>
+                                            </tr>
+                                        </tfoot>
                                     </table>
                                 </div>
                                 <!-- end tab cont -->

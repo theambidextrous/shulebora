@@ -73,7 +73,7 @@
                          <!-- semi-nav -->
                         <a href="{{ route('teacher.lessons') }}" class="list-group-item ">My Lessons</a>
                         <a href="{{ route('teacher.subjects') }}" class="list-group-item">My Subjects</a>
-                        <a href="{{ route('teacher.assignments') }}" class="list-group-item">Assignments</a>
+                        <a href="{{ route('teacher.assignments') }}" class="list-group-item">Topical Questions</a>
                         <a href="{{ route('teacher.papers') }}" class="list-group-item active">Revision Papers</a>
                         <!-- end semi-nav -->
                     </div>

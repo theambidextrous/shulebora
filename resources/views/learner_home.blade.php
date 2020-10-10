@@ -45,39 +45,58 @@
     @endif
     <!-- ============================================================== -->
     <div class="container-fluid">
-        <!-- Row -->
+        <!-- Row profile-->
         <div class="row">
             <!-- Column -->
-            <div class="col-lg-3 col-xlg-3 col-md-3">
+            <div class="col-lg-4 col-xlg-4 col-md-4">
                 <div class="card">
                     <div class="card-body">
-                        <center class="mt-0"> <img src="{{asset('icons/avatar.png')}}" class="rounded-circle" width="80" />
-                            <h4 class="card-title mt-2">{{Auth::user()->name}}({{$f->alias}})</h4>
+                        <center class="mt-0"> <img src="{{asset('icons/avatar.png')}}" class="rounded-circle" width="50" />
+                            <h4 class="card-title mt-1">{{Auth::user()->name}}({{$f->alias}})</h4>
                             <h6 class="card-subtitle">{{Auth::user()->school}}</h6>
                             <div class="row text-center justify-content-md-center">
                                 <div class="col-4"><a href="javascript:void(0)" class="link"><i class="icon-notebook"></i> <font class="font-medium">{{$subjects_count}}</font></a></div>
                                 <div class="col-4"><a href="javascript:void(0)" class="link"><i class="icon-book-open"></i> <font class="font-medium">{{$f->name}}</font></a></div>
                             </div>
+                            <hr>
+                            <a class="btn btn-success" href="{{route('profile')}}">Update Profile</a>
                         </center>
                     </div>
-                    <div>
-                        <hr>
-                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-xlg-4 col-md-4">
+                <div class="card">
                     <div class="card-body">
                         <small class="text-muted">Email address </small>
                         <h6>{{Auth::user()->email}}</h6>
                         <small class="text-muted pt-4 db">Phone</small>
                         <h6>{{Auth::user()->phone}}</h6>
+                        <small class="text-muted pt-4 db">Gender</small>
+                        <h6>{{Auth::user()->gender}}</h6>
                         <small class="text-muted pt-4 db">Address</small>
                         <h6>N/A</h6>
-                        <hr>
-                        <a class="btn btn-success" href="{{route('profile')}}">Update Profile</a>
                     </div>
                 </div>
             </div>
+            <div class="col-lg-4 col-xlg-4 col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title mt-1">My Subscription</h4>
+                        <small class="text-muted">Package </small>
+                        <h6>{{ucwords(strtolower(App\Package::find(Auth::user()->package)->name))}}</h6>
+                        <small class="text-muted pt-4 db">Date Subscribed</small>
+                        <h6>{{$subscription_data['start']}}</h6>
+                        <small class="text-muted pt-4 db">Date of Expiration</small>
+                        <h6>{{$subscription_data['expiry']}}</h6>
+                    </div>
+            </div>
+            <!-- end Column -->
+        </div>
+        <!-- End Row --profiel -->
+        <!-- Row -->
+        <div class="row">
             <!-- Column -->
-            <!-- Column -->
-            <div class="col-lg-3 col-xlg-3 col-md-3">
+            <div class="col-lg-5 col-xlg-5 col-md-5">
                 <div class="card">
                 <a class="nav-link active tm-lg" id="pills-timeline-tab" data-toggle="pill" href="#current-month" role="tab" aria-controls="pills-timeline" aria-selected="true"><i class="icon-notebook"></i> My Subjects</a>
                 <div id="accordion" class="custom-accordion mb-4 accordion-class">
@@ -123,7 +142,7 @@
             </div>
             <!-- Column -->
             <!-- Column -->
-            <div class="col-lg-6 col-xlg-6 col-md-6">
+            <div class="col-lg-7 col-xlg-7 col-md-7">
                 <div class="card">
                     <a class="nav-link active tm-lg" id="pills-timeline-tab" data-toggle="pill" href="#current-month" role="tab" aria-controls="pills-timeline" aria-selected="true"><i class="mdi mdi-calendar-clock"></i> Live Class Calendar</a>
                     <div id="accordion" class="custom-accordion mb-4 accordion-class">
@@ -169,7 +188,66 @@
     <!--This page plugins -->
     <script src="{{ asset('assets/libs/moment/min/moment.min.js') }}"></script>
     <script src="{{ asset('assets/libs/fullcalendar/dist/fullcalendar.min.js') }}"></script>
-    <script src="{{ asset('dist/js/pages/calendar/cal-init.js') }}"></script>
+    <!-- <script src="{{ asset('dist/js/pages/calendar/cal-init.js') }}"></script> -->
+    <script>
+    ! function($) {
+    "use strict";
+    var CalendarApp = function() {
+        this.$body = $("body")
+        this.$calendar = $('#calendar'),
+        this.$calendarObj = null
+    };
+    /* on click on event */
+    CalendarApp.prototype.onEventClick = function(calEvent, jsEvent, view) {
+        var $this = this;
+        var form = $("<form></form>");
+    },
+    /* Initializing */
+    CalendarApp.prototype.init = function() {
+            /*  Initialize the calendar  */
+            var date = new Date();
+            var d = date.getDate();
+            var m = date.getMonth();
+            var y = date.getFullYear();
+            var form = '';
+            var today = new Date($.now());
+            var defaultEvents = @json($timetable);
+            console.log(defaultEvents);
+            var $this = this;
+            $this.$calendarObj = $this.$calendar.fullCalendar({
+                slotDuration: '00:15:00',
+                /* If we want to split day time each 15minutes */
+                minTime: '08:00:00',
+                maxTime: '19:00:00',
+                defaultView: 'month',
+                handleWindowResize: true,
+
+                header: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'month,agendaWeek,agendaDay'
+                },
+                events: defaultEvents,
+                editable: false,
+                droppable: false, // this allows things to be dropped onto the calendar !!!
+                eventLimit: true, // allow "more" link when too many events
+                selectable: true,
+                // drop: function(date) { $this.onDrop($(this), date); },
+                // select: function(start, end, allDay) { $this.onSelect(start, end, allDay); },
+                eventClick: function(calEvent, jsEvent, view) { $this.onEventClick(calEvent, jsEvent, view); }
+
+            });
+        },
+        //init CalendarApp
+        $.CalendarApp = new CalendarApp, $.CalendarApp.Constructor = CalendarApp
+}(window.jQuery),
+
+//initializing CalendarApp
+$(window).on('load', function() {
+
+    $.CalendarApp.init()
+});
+    </script>
     <!-- start - This is for export functionality only -->
     <!-- <script src="{{ asset('assets/dt/dataTables.buttons.min.js') }}"></script>
     <script src="{{ asset('assets/dt/buttons.flash.min.js') }}"></script>

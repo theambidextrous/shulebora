@@ -9,8 +9,11 @@ use App\Form;
 use App\Subject;
 use App\Tsubject;
 use App\Curriculum;
+use App\Forum;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 use Validator;
+use Storage;
 
 class SubjectController extends Controller
 {
@@ -50,6 +53,66 @@ class SubjectController extends Controller
             'forms' => $this->form_list(),
             'classes' => $this->class_list()
         ]);
+    }
+    public function teacher_forum($subject)
+    {
+        if(!Auth::user()->is_teacher){
+            abort(404); 
+        }
+        $forums = Forum::where('subject', $subject)
+                    ->where('answer', null)
+                    ->where('answered_by', null)
+                    ->get();
+        $frm = [];
+        if(!is_null($forums)){
+            $frm = $forums->toArray();
+        }
+        return view('teacher_forums')->with([
+            'forums' => $frm,
+            'subject' => Subject::find($subject)->name
+        ]);
+    }
+    protected function all_forums($subject)
+    {
+        $forums = Forum::where('subject', $subject)->where('answer', null)->where('answered_by', null)->get();
+        $frm = [];
+        if(!is_null($forums)){ $frm = $forums->toArray(); }
+        $data = [ $frm, Subject::find($subject)->name];
+        return $data;
+    }
+    public function teacher_forum_answer(Request $request)
+    {
+        Validator::make($request->all(),[
+            'answer' => 'string|required',
+            'question_id' => 'integer|required',
+        ])->validate();
+        $input = $request->all();
+        $input['answered_by'] = Auth::user()->id;
+        if($request->hasfile('a_image')){
+            $file_content = $request->file('a_image');
+            $file_content_name = (string) Str::uuid() . $file_content->getClientOriginalName();
+            Storage::disk('local')
+                ->putFileAs('cls/trt/content', $file_content, $file_content_name);
+            $input['a_image'] = $file_content_name;
+        }
+        if( Forum::find($input['question_id'])->update($input) )
+        {
+            $data = $this->all_forums(Forum::find($input['question_id'])->subject);
+            return view('teacher_forums')->with([
+                'flag' => 1,
+                'msg' => 'Answer posted successfully',
+                'forums' => $data[0],
+                'subject' => $data[1]
+            ]);
+        }else{
+            $data = $this->all_forums(Forum::find($input['question_id'])->subject);
+            return view('teacher_forums')->with([
+                'flag' => 2,
+                'msg' => 'Answer could not be posted at this time. try again',
+                'forums' => $data[0],
+                'subject' => $data[1]
+            ]);
+        }
     }
     public function show($id)
     {

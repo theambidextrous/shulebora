@@ -73,7 +73,7 @@
                          <!-- semi-nav -->
                         <a href="{{ route('teacher.lessons') }}" class="list-group-item active">My Lessons</a>
                         <a href="{{ route('teacher.subjects') }}" class="list-group-item">My Subjects</a>
-                        <a href="{{ route('teacher.assignments') }}" class="list-group-item">Assignments</a>
+                        <a href="{{ route('teacher.assignments') }}" class="list-group-item">Topical Questions</a>
                             <a href="{{ route('teacher.papers') }}" class="list-group-item">Revision Papers</a>
                         <!-- end semi-nav -->
                     </div>
@@ -200,17 +200,7 @@
                                                         </span>
                                                     @enderror
                                                 </div>
-                                                <div class="form-group mb-4">
-                                                    <label for="audio_content">Upload audio(mp3,mp4) </label>
-                                                    <input type="file" name="audio_content" class="form-control @error('audio_content') is-invalid @enderror" id="audio_content" data-toggle="tooltip"
-                                                        data-placement="bottom" title="audio_content here" value="{{ old('audio_content') }}"  autocomplete="audio_content">
-                                                    <span class="bar"></span>
-                                                    @error('audio_content')
-                                                        <span class="invalid-feedback" role="alert">
-                                                            <strong>{{ $message }}</strong>
-                                                        </span>
-                                                    @enderror
-                                                </div>
+                                                <input type="hidden" name="audio_content" value="n/a"/>
                                                 <div class="form-group mb-4">
                                                     <label for="video_content">Upload video(mp4,avi,mp3) </label>
                                                     <input type="file" name="video_content" class="form-control @error('video_content') is-invalid @enderror" id="video_content" data-toggle="tooltip"

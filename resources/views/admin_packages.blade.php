@@ -219,9 +219,9 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group mb-4">
-                                         <input type="number" name="max_usage" class="form-control @error('max_usage') is-invalid @enderror" id="max_usage" data-toggle="tooltip" data-placement="bottom" title="max usage here e.g. " value="{{ old('max_usage') }}" required autocomplete="max_usage" autofocus="max_usage">
+                                         <input type="number" name="max_usage" class="form-control @error('max_usage') is-invalid @enderror" id="max_usage" data-toggle="tooltip" data-placement="bottom" title="duration here e.g. " value="{{ old('max_usage') }}" required autocomplete="max_usage" autofocus="max_usage">
                                         <span class="bar"></span>
-                                        <label for="max_usage">Package Maximum Users</label>
+                                        <label for="max_usage">Package Duration(in months)</label>
                                         @error('max_usage')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>

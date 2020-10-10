@@ -1,25 +1,9 @@
 <li class="nav-small-cap"><i class="mdi mdi-dots-horizontal"></i> <span class="hide-menu">Home</span></li>
 <li class="sidebar-item">
-    <a class="sidebar-link waves-effect waves-dark" href="{{ route('teacher') }}" aria-expanded="false"><i class="mdi mdi-gauge"></i><span class="hide-menu">Dashboard</span></a>
+    <a class="sidebar-link waves-effect waves-dark" href="{{ route('corporate') }}" aria-expanded="false"><i class="mdi mdi-gauge"></i><span class="hide-menu">Home</span></a>
 </li>
 
-<li class="nav-small-cap"><i class="mdi mdi-dots-horizontal"></i> <span class="hide-menu">People</span></li>
+<li class="nav-small-cap"><i class="mdi mdi-dots-horizontal"></i> <span class="hide-menu">Accounts</span></li>
 <li class="sidebar-item">
-    <a class="sidebar-link has-arrow waves-effect waves-dark" href="#" aria-expanded="false"><i class="mdi mdi-account-multiple"></i><span class="hide-menu">People</span></a>
-    <ul aria-expanded="false" class="collapse first-level">
-        <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark" href="{{ route('teacher') }}" aria-expanded="false"><i class="mdi mdi-collage"></i><span class="hide-menu">My Students</span></a></li>
-    </ul>
-</li>
-
-<li class="nav-small-cap"><i class="mdi mdi-dots-horizontal"></i> <span class="hide-menu">Subjects</span></li>
-<li class="sidebar-item">
-    <a class="sidebar-link has-arrow waves-effect waves-dark" href="{{ route('teacher') }}" aria-expanded="false"><i class="mdi mdi-book-open-page-variant"></i><span class="hide-menu">Subjects</span></a>
-    <ul aria-expanded="false" class="collapse first-level">
-        <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark" href="{{ route('teacher') }}" aria-expanded="false"><i class="mdi mdi-collage"></i><span class="hide-menu">My Subjects</span></a></li>
-    </ul>
-</li>
-
-<li class="nav-small-cap"><i class="mdi mdi-dots-horizontal"></i> <span class="hide-menu">My Lessons</span></li>
-<li class="sidebar-item">
-    <a class="sidebar-link waves-effect waves-dark" href="{{route('teacher')}}" aria-expanded="false"><i class="mdi mdi-book-multiple"></i><span class="hide-menu">My Lessons </span></a>
+    <a class="sidebar-link waves-effect waves-dark" href="{{ route('corporate.accounts') }}" aria-expanded="false"><i class="mdi mdi-chart-areaspline"></i><span class="hide-menu">Accounts</span></a>
 </li>

@@ -1,0 +1,23 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <!-- <a class="navbar-brand" href="#">Navbar</a> -->
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item">
+        <a class="nav-link" href="{{ url('/') }}">Printable Notes</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{{ url('/') }}">Videos</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{{ route('login') }}"><span class="auth-links"><i class="mdi mdi-lock"></i>Login</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{{ route('student_form') }}"><span class="auth-links"><i class="mdi mdi-account-circle"></i>Register</span></a>
+      </li>
+    </ul>
+  </div>
+</nav>

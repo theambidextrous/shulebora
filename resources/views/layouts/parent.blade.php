@@ -25,6 +25,23 @@
         .tm-lg{
             font-size:18px;
         }
+        
+        @media only screen and (max-width: 768px) {
+        /* For mobile phones: */
+            .guest-menu{
+                display:block!important;
+                line-height: 20px;
+                height:100%;
+                padding: 0 .75rem;
+                font-size: 16px;
+            }
+            .guest-menu > li {
+                border-bottom: solid 1px #bfbdbd!important;
+            }
+        }
+        .my-video-dimensions {
+            max-width: 100%!important;
+        }
         .page-titles > .col-md-5 > .text-themecolor{
             color:#dd3333!important;
             margin-bottom:10px!important;

@@ -123,6 +123,32 @@ return [
 
     'cipher' => 'AES-256-CBC',
 
+    /**
+     * MPESA configurations goes here.
+     * paybill, keys, callback urls etc 
+     */
+    'app_mpesa_c_key' => env('APP_MPESA_C_KEY'),
+    'app_mpesa_c_secret' => env('APP_MPESA_C_SECRET'),
+    'app_mpesa_c2b_c_key' => env('APP_MPESA_C2B_C_KEY'),
+    'app_mpesa_c2b_c_secret' => env('APP_MPESA_C2B_C_SECRET'),
+    'app_mpesa_paybill' => env('APP_MPESA_PAYBILL'),
+    'app_mpesa_passkey' => env('APP_MPESA_PASSKEY'),
+    'app_mpesa_trans_type' => env('APP_MPESA_TRANS_TYPE'),
+    'app_mpesa_env' => env('APP_MPESA_ENV'),
+    'app_mpesa_c2b_phone' => env('APP_MPESA_C2B_PHONE'),
+    'app_mpesa_c2b_paybill' => env('APP_MPESA_C2B_PAYBILL'),
+    'app_mpesa_lesson_cost' => env('LESSON_COST'),
+
+    /**
+     * SMS configurations goes here.
+     * shortcode, keys,etc
+     */
+    'app_sms_partner_id' => env('SMS_PARTNER_ID'),
+    'app_sms_shortcode' => env('SMS_SHORTCODE'),
+    'app_sms_api_key' => env('SMS_API_KEY'),
+    'app_sms_api_url' => env('SMS_API_URL'),
+    'app_sms_api_url_bulk' => env('SMS_API_URL_BULK'),
+
     /*
     |--------------------------------------------------------------------------
     | Autoloaded Service Providers

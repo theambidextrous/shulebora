@@ -7,8 +7,10 @@ use Illuminate\Http\Response;
 use App\User;
 use App\Lesson;
 use App\Curriculum;
+use App\Subject;
 use App\Tsubject;
 use Storage;
+use Config;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Validator;
@@ -173,6 +175,45 @@ class LessonController extends Controller
             $input['created_by'] = Auth::user()->id;
             $lesson = Lesson::create($input);
             if($lesson){
+                if( $request->get('type') == 'LIVE' ){
+                    /** notify */
+                    $notify_topic = $input['topic'];
+                    $topicObject = Curriculum::find($notify_topic);
+                    $subjectObject = Subject::find($topicObject->subject);
+                    $recipientsObject = User::select('phone')->where('is_learner', true)
+                        ->where('group', $subjectObject->is_what)
+                        ->where('level', $subjectObject->form_or_class)
+                        ->get();
+                    if(!is_null($recipientsObject))
+                    {
+                        $phones_to_receive_sms = $recipientsObject->toArray();
+                        $_d = date('M jS, Y', strtotime($input['zoom_time']));
+                        $_t = date('h:i a', strtotime($input['zoom_time']));
+                        $date_and_time = $_d . ' @ ' . $_t;
+                        $_all_count = count($phones_to_receive_sms);
+                        $counter_id = 1;
+                        $message = 'New LIVE Class - ' . $date_and_time . '. Subject: ' . ucwords(strtolower($subjectObject->name)) .PHP_EOL. '. Topic: '.ucwords(strtolower($topicObject->topic)).')';
+                        $smslist = [];
+                        foreach ($phones_to_receive_sms as $key => $phone) {
+                            array_push($smslist, [
+                                "apikey" => Config::get('app.app_sms_api_key'),
+                                "partnerID" => Config::get('app.app_sms_partner_id'),
+                                "pass_type" => "plain",
+                                "clientsmsid" => $counter_id.time(),
+                                "message" => $message,
+                                "shortcode" => Config::get('app.app_sms_shortcode'),
+                                "mobile" => substr($this->format_tel($phone['phone']), 1, 12)
+                            ]);
+                            if( $counter_id%20 == 0 || $counter_id >= $_all_count)
+                            {
+                                $_body_data = ['count' => count($smslist), 'smslist' => $smslist];
+                                $this->sendSmsBulk($_body_data);
+                                $smslist = [];
+                            }
+                            $counter_id ++;
+                        }
+                    }
+                }
                 return view('admin_lessons')->with([
                     'flag' => 1,
                     'lessons' => $this->lesson_list(),
@@ -193,7 +234,7 @@ class LessonController extends Controller
             return view('admin_lessons')->with([
                 'flag' => 3,
                 'lessons' => $this->lesson_list(),
-                'msg' => 'Databse error. Most likely entry already exists',
+                'msg' => 'Databse error. Most likely entry already exists',//$ex->getMessage(),
                 'topics' => $this->topic_list(),
                 'teachers' => $this->teacher_list()
             ]);
@@ -294,6 +335,45 @@ class LessonController extends Controller
             $input['created_by'] = $input['teacher'] = Auth::user()->id;
             $lesson = Lesson::create($input);
             if($lesson){
+                if( $request->get('type') == 'LIVE' ){
+                    /** notify */
+                    $notify_topic = $input['topic'];
+                    $topicObject = Curriculum::find($notify_topic);
+                    $subjectObject = Subject::find($topicObject->subject);
+                    $recipientsObject = User::select('phone')->where('is_learner', true)
+                        ->where('group', $subjectObject->is_what)
+                        ->where('level', $subjectObject->form_or_class)
+                        ->get();
+                    if(!is_null($recipientsObject))
+                    {
+                        $phones_to_receive_sms = $recipientsObject->toArray();
+                        $_d = date('M jS, Y', strtotime($input['zoom_time']));
+                        $_t = date('h:i a', strtotime($input['zoom_time']));
+                        $date_and_time = $_d . ' @ ' . $_t;
+                        $_all_count = count($phones_to_receive_sms);
+                        $counter_id = 1;
+                        $message = 'New LIVE Class - ' . $date_and_time . '. Subject: ' . ucwords(strtolower($subjectObject->name)) .PHP_EOL. '. Topic: '.ucwords(strtolower($topicObject->topic)).')';
+                        $smslist = [];
+                        foreach ($phones_to_receive_sms as $key => $phone) {
+                            array_push($smslist, [
+                                "apikey" => Config::get('app.app_sms_api_key'),
+                                "partnerID" => Config::get('app.app_sms_partner_id'),
+                                "pass_type" => "plain",
+                                "clientsmsid" => $counter_id.time(),
+                                "message" => $message,
+                                "shortcode" => Config::get('app.app_sms_shortcode'),
+                                "mobile" => substr($this->format_tel($phone['phone']), 1, 12)
+                            ]);
+                            if( $counter_id%20 == 0 || $counter_id >= $_all_count)
+                            {
+                                $_body_data = ['count' => count($smslist), 'smslist' => $smslist];
+                                $this->sendSmsBulk($_body_data);
+                                $smslist = [];
+                            }
+                            $counter_id ++;
+                        }
+                    }
+                }
                 return view('teacher_lessons')->with([
                     'flag' => 1,
                     'lessons' => $this->lesson_list(),
@@ -553,11 +633,11 @@ class LessonController extends Controller
     }
     protected function lesson_list()
     {
-        return Lesson::where('is_active', true)->get()->toArray();
+        return Lesson::where('is_active', true)->orderBy('created_at', 'DESC')->get()->toArray();
     }
     protected function teacher_lesson_list()
     {
-        return Lesson::where('teacher', Auth::user()->id)->where('is_active', true)->get()->toArray();
+        return Lesson::where('created_by', Auth::user()->id)->where('is_active', true)->get()->toArray();
     }
     protected function teacher_topic_list()
     {
@@ -567,7 +647,7 @@ class LessonController extends Controller
     }
     protected function topic_list()
     {
-        return Curriculum::where('is_active', true)->get()->toArray();
+        return Curriculum::where('is_active', true)->orderBy('subject', 'desc')->get()->toArray();
     }
     protected function teacher_list()
     {
@@ -576,6 +656,68 @@ class LessonController extends Controller
     protected function class_list()
     {
         return Gclass::where('is_active', true)->get()->toArray();
+    }
+    protected function sendSmsBulk($body){
+        try{
+            $curl = curl_init();
+            curl_setopt($curl, CURLOPT_URL, Config::get('app.app_sms_api_url_bulk'));
+            curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Type:application/json')); 
+            $data_string = json_encode($body);
+            curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($curl, CURLOPT_POST, true);
+            curl_setopt($curl, CURLOPT_POSTFIELDS, $data_string);
+            $curl_response = curl_exec($curl);
+            return true;
+        }catch(Exception $e ){
+            return false;
+        }
+    }
+    protected function format_tel($tel){
+        // print_r($tel);
+        $phone =  '';
+        $tel = str_replace(' ', '', $tel);
+        if( substr( $tel, 0, 2 ) === "07" && strlen($tel) == 10 ){
+            return $phone = '+254'.(int)$tel;
+        }
+        elseif( substr( $tel, 0, 2 ) === "01" && strlen($tel) == 10 ){
+            return $phone = '+254'.(int)$tel;
+        }
+        elseif( substr( $tel, 0, 4 ) === "2547" && strlen($tel) == 12 ){
+            return $phone = '+'.$tel;
+        }
+        elseif( substr( $tel, 0, 4 ) === "2541" && strlen($tel) == 12 ){
+            return $phone = '+'.$tel;
+        }
+        elseif( substr( $tel, 0, 5 ) === "25407" && strlen($tel) == 13 ){
+            $phone = strstr($tel, '0');
+            return	$phone = '+254'.(int)$phone;
+        }
+        elseif( substr( $tel, 0, 5 ) === "25401" && strlen($tel) == 13 ){
+            $phone = strstr($tel, '0');
+            return	$phone = '+254'.(int)$phone;
+        }
+        elseif( substr( $tel, 0, 6 ) === "+25407" && strlen($tel) == 14 ){
+            $phone = strstr($tel, '0');
+            return $phone = '+254'.(int)$phone;
+        }
+        elseif( substr( $tel, 0, 6 ) === "+25401" && strlen($tel) == 14 ){
+            $phone = strstr($tel, '0');
+            return $phone = '+254'.(int)$phone;
+        }
+        elseif( substr( $tel, 0, 1 ) === "7" && strlen($tel) == 9 ){
+            return $phone = '+254'.(int)$tel;
+        }
+        elseif( substr( $tel, 0, 1 ) === "1" && strlen($tel) == 9 ){
+            return $phone = '+254'.(int)$tel;
+        }
+        elseif( substr( $tel, 0, 5 ) === "+2547" && strlen($tel) == 13 ){
+            return $phone = $tel;
+        }
+        elseif( substr( $tel, 0, 5 ) === "+2541" && strlen($tel) == 13 ){
+            return $phone = $tel;
+        }else{
+            throw new Exception('Invalid phone number. try format 07XXX or 01XXX');
+        }
     }
 }
 
